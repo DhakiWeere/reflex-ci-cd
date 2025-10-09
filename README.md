@@ -23,7 +23,7 @@ It not only deploys automatically on each push — it also lets you edit and com
 
 ## Concept Overview
 
-LoopDeploy demonstrates a *two-way CI/CD pipeline*:
+**Reflex CI/CD** pipeline demonstrates a *two-way CI/CD pipeline*:
 
 ```text
 ┌──────────┐        ┌──────────────┐        ┌──────────┐
