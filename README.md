@@ -5,7 +5,7 @@ It not only deploys automatically on each push — it also lets you edit and com
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Automatic Deployment via GitHub Actions**  
   Every new commit triggers a GitHub Actions workflow that connects to your EC2 instance, pulls the latest changes, and rebuilds the app.
@@ -21,9 +21,9 @@ It not only deploys automatically on each push — it also lets you edit and com
 
 ---
 
-## 🧠 Concept Overview
+## Concept Overview
 
-LoopDeploy demonstrates a *two-way CI/CD pipeline*:
+**Reflect CI/CD** demonstrates a *two-way CI/CD pipeline*:
 
 ```text
 ┌──────────┐        ┌──────────────┐        ┌──────────┐
