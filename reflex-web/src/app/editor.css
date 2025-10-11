@@ -1,0 +1,52 @@
+/* editor.css */
+
+/* Main page container */
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem; /* ~p-10 */
+  background-color: #f3f4f6; /* Tailwind gray-100 */
+  font-family: Arial, sans-serif;
+}
+
+/* Page title */
+.page-title {
+  font-size: 2rem; /* text-2xl */
+  font-weight: bold;
+  margin-bottom: 1rem; /* mb-4 */
+  color: #111827; /* Tailwind gray-900 */
+}
+
+/* Editor container */
+.editor-wrapper {
+  width: 100%;
+  max-width: 960px; /* max-w-3xl */
+  height: 500px; /* h-[500px] */
+  border: 1px solid #d1d5db; /* Tailwind gray-300 */
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+  overflow: hidden;
+}
+
+/* Code output below editor */
+.code-output {
+  margin-top: 1.5rem; /* mt-6 */
+  background-color: #ffffff;
+  padding: 1rem; /* p-4 */
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 960px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* shadow-inner */
+  white-space: pre-wrap; /* wrap long code lines */
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+/* test btn */
+.test-btn{
+    padding: 1rem;
+    width : 7rem
+}
