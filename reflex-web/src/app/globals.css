@@ -1,42 +1,27 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* global.css  */
+
+/* Main page container */
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem; 
+  background-color: #f3f4f6;
+  font-family: Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* title */
+.page-title {
+  font-size: 2rem; 
+  font-weight: bold;
+  margin-bottom: 1rem; 
+  color: #111827; 
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* subtitle */
+.page-subtitle{
+  color : black;
+  font-size: 2rem;
 }

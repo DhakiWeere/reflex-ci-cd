@@ -9,7 +9,9 @@ export default function Home() {
 
   return (
     <main className="main-container">
-      <h1 className="page-title">React Code Editor</h1>
+      <h1 className="page-title">Reflect CI / CD  </h1>
+      <h2 className="page-subtitle">Self Reflecting System Pipeline</h2>
+
       <div className="editor-wrapper">
         <Editor
           height="100%"
