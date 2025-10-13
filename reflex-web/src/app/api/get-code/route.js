@@ -14,7 +14,7 @@ export async function GET(request) {
       repo: process.env.GITHUB_REPO,
       path: 'reflex-web/src/app/page,jsx',
       // branch
-      ref: 'web'
+      ref: 'test/next-react'
     });
 
     // Decode the base64 content
