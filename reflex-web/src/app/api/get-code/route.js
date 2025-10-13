@@ -12,9 +12,9 @@ export async function GET(request) {
     const { data } = await octokit.repos.getContent({
       owner: process.env.GITHUB_OWNER,
       repo: process.env.GITHUB_REPO,
-      path: 'reflex-web/src/app/page.jsx',
-      // branch
-      ref: 'test/next-react'
+      path: process.env.FILE_PATH_INDEX,
+       // branch
+      ref: process.env.GITHUB_PROD_REF,
     });
 
     // Decode the base64 content

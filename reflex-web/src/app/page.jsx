@@ -2,42 +2,27 @@
 
 import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
+import { fetchCodeFromGitHub, getUser, isUserSaved, pushCode, removeUser } from "./utils/util";
 
 export default function Home() {
   const [code, setCode] = useState("// LOADING PAGE ....");
+  const [username, setUsername] = useState("");
+  const [commitTag, setCommitTag] = useState("");
+  const [userID, setUserID] = useState(0);
+  const [isUserPersisted, setIsUserPersisted] = useState(false);
 
-  async function updateEditor() {
-    try {
-      const response = await fetch('/api/get-code');
-
-      // response success ?
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // JSON
-      const jsonData = await response.json();
-
-      // update editor
-      setCode(jsonData.jsxContent);
-
-    } catch (error) {
-      console.error('Error fetching code:', error);
-      throw error;
-    }
-  }
-
-
-  // get code from branch first render
-  useEffect(()=>{
-    setTimeout(updateEditor, 2500);
-  }, []);
+  // init setup run 
+  useEffect(_setup, []);
 
   return (
     <main className="main-container">
+      {/* TITLE */}
       <h1 className="page-title">Reflex CI / CD  </h1>
+
+      {/* SUBTILE */}
       <h2 className="page-subtitle">Self Reflecting System Pipeline</h2>
 
+      {/* EDITOR */}
       <div className="editor-wrapper">
         <Editor
           height="100%"
@@ -47,7 +32,53 @@ export default function Home() {
           onChange={(value) => setCode(value || "")}
         />
       </div>
-      <button id="btnPushCode" className="btn-pushcode" onClick={updateEditor}>Push Code</button>
+
+      {/* DETAILS */}
+      <div className="push-details-container">
+        {/* lbl username */}
+        <div>Username</div>
+        {/* username input */}
+        <input type="text" value={username} onChange={(v) => {
+          setUsername(v.target.value)
+          setUserID(Math.floor(Math.random() * 99999));
+        }} />
+        {/* user id auto generate field */}
+        {username && <input value={userID} readOnly={true} />}
+        {/* delete user button */}
+        {isUserPersisted && <button onClick={() => {
+          removeUser();
+          setUserID(""); setCommitTag(""); setUserID(0);
+          setIsUserPersisted(false);
+        }}>Remove User</button>}
+
+        {/* lbl Commit tag */}
+        <div>Commit Tag</div>
+        {/* commit tag input */}
+        <input type="text" value={commitTag} onChange={(v) => setCommitTag(v.target.value)} />
+      </div>
+
+      {/* PUSH COMMIT TO REPO BTN */}
+      <button className="btn-pushcode" onClick={() => {
+        pushCode(username, userID);
+        setIsUserPersisted(true);
+      }}>Push Code</button>
     </main>
   );
+
+  // hoisted setup function declaration
+  function _setup() {
+    // load code content from github
+    (async () => {
+      const data = await fetchCodeFromGitHub();
+      setCode(data);
+    })();
+
+    // load user from cookies if exist
+    if (isUserSaved()) {
+      const userObj = getUser();
+      setUsername(userObj.username);
+      setUserID(userObj.id);
+      setIsUserPersisted(true);
+    }
+  }
 }

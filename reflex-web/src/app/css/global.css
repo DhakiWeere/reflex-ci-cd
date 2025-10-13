@@ -5,9 +5,9 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2.5rem; 
+  align-items: start;
+  justify-content: flex-start;
+  padding: 1rem; 
   background-color: #f3f4f6;
   font-family: Arial, sans-serif;
 }
@@ -45,3 +45,7 @@
   padding : 0.5rem;
   border-radius : 7px 
 }
+
+/* Push details container */
+.push-details-container{}
+

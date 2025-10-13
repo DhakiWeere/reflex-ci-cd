@@ -1,4 +1,4 @@
-import "./global.css";
+import "./css/global.css";
 
 export const metadata = {
   title: "Refelct CI/CD",
