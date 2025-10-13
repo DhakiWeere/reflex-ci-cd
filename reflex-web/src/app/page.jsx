@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
 
 export default function Home() {
-  const [code, setCode] = useState("// Start typing code here...");
+  const [code, setCode] = useState("// LOADING PAGE ....");
 
   async function updateEditor() {
     try {
@@ -26,6 +26,12 @@ export default function Home() {
       throw error;
     }
   }
+
+
+  // get code from branch first render
+  useEffect(()=>{
+    setTimeout(updateEditor, 4000);
+  }, []);
 
   return (
     <main className="main-container">
