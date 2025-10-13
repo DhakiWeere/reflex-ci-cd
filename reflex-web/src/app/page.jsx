@@ -3,12 +3,29 @@
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
 
-async function updateEditor(){
-
-}
-
 export default function Home() {
   const [code, setCode] = useState("// Start typing code here...");
+
+  async function updateEditor() {
+    try {
+      const response = await fetch('http://localhost:3000/api/get-code');
+
+      // response success ?
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // JSON
+      const jsonData = await response.json();
+
+      // update editor
+      setCode(jsonData.jsxContent);
+
+    } catch (error) {
+      console.error('Error fetching code:', error);
+      throw error;
+    }
+  }
 
   return (
     <main className="main-container">
@@ -24,7 +41,7 @@ export default function Home() {
           onChange={(value) => setCode(value || "")}
         />
       </div>
-      <button id="btnPushCode" className="btn-pushcode">Push Code</button>
+      <button id="btnPushCode" className="btn-pushcode" onClick={updateEditor}>Push Code</button>
     </main>
   );
 }

@@ -12,20 +12,20 @@ export async function GET(request) {
     const { data } = await octokit.repos.getContent({
       owner: process.env.GITHUB_OWNER,
       repo: process.env.GITHUB_REPO,
-      path: 'reflex-web/src/app/page,jsx',
+      path: 'reflex-web/src/app/page.jsx',
       // branch
       ref: 'test/next-react'
     });
 
     // Decode the base64 content
-    const htmlContent = Buffer.from(data.content, 'base64').toString('utf-8');
+    const jsxContent = Buffer.from(data.content, 'base64').toString('utf-8');
 
     // Return the HTML content in JSON response
     return NextResponse.json({
       success: true,
       fileName: data.name,
       path: data.path,
-      htmlContent: htmlContent,
+      jsxContent: jsxContent,
       sha: data.sha, // You'll need this for updates later
       size: data.size
     });
