@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
-import './editor.css';
 
 export default function Home() {
   const [code, setCode] = useState("// Start typing code here...");
@@ -21,9 +20,7 @@ export default function Home() {
           onChange={(value) => setCode(value || "")}
         />
       </div>
-      {/* <pre className="code-output">{code}</pre> */}
-      <button className="test-btn" 
-      onClick={() => {alert(`CODE : \n ${code}`)}}>Get Code</button>
+      <button id="btnPushCode" className="btn-pushcode">Push Code</button>
     </main>
   );
 }

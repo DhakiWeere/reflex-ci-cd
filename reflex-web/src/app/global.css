@@ -1,4 +1,4 @@
-/* editor.css */
+/* global.css  */
 
 /* Main page container */
 .main-container {
@@ -8,16 +8,22 @@
   align-items: center;
   justify-content: center;
   padding: 2.5rem; 
-  background-color: #f3f4f6; 
+  background-color: #f3f4f6;
   font-family: Arial, sans-serif;
 }
 
-/* Page title */
+/* title */
 .page-title {
-  font-size: 2rem; 
+  font-size: 3rem; 
   font-weight: bold;
-  margin-bottom: 1rem;
-  color: #111827;
+  margin-bottom: 1rem; 
+  color: #111827; 
+}
+
+/* subtitle */
+.page-subtitle{
+  color : black;
+  font-size: 2rem;
 }
 
 /* Editor container */
@@ -31,16 +37,11 @@
   overflow: hidden;
 }
 
-/* Code output below editor */
-.code-output {
-  margin-top: 1.5rem; 
-  background-color: #ffffff;
-  padding: 1rem; 
-  border-radius: 0.5rem;
-  width: 100%;
-  max-width: 960px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); 
-  white-space: pre-wrap; 
-  font-family: monospace;
-  font-size: 0.9rem;
+
+/* push code  btn */
+.btn-pushcode{
+  background-color: #2a2a2a;
+  color : white;
+  padding : 0.5rem;
+  border-radius : 7px 
 }
