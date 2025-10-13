@@ -8,7 +8,7 @@ export default function Home() {
 
   async function updateEditor() {
     try {
-      const response = await fetch('http://localhost:3000/api/get-code');
+      const response = await fetch('/api/get-code');
 
       // response success ?
       if (!response.ok) {
@@ -30,7 +30,7 @@ export default function Home() {
 
   // get code from branch first render
   useEffect(()=>{
-    setTimeout(updateEditor, 4000);
+    setTimeout(updateEditor, 2500);
   }, []);
 
   return (
