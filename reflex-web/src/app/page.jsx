@@ -47,7 +47,7 @@ export default function Home() {
         {/* delete user button */}
         {isUserPersisted && <button onClick={() => {
           removeUser();
-          setUserID(""); setCommitTag(""); setUserID(0);
+          setUsername(""); setCommitTag(""); setUserID(0);
           setIsUserPersisted(false);
         }}>Remove User</button>}
 
