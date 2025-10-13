@@ -3,12 +3,16 @@
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
 
+async function updateEditor(){
+
+}
+
 export default function Home() {
   const [code, setCode] = useState("// Start typing code here...");
 
   return (
     <main className="main-container">
-      <h1 className="page-title">Reflect CI / CD  </h1>
+      <h1 className="page-title">Reflex CI / CD  </h1>
       <h2 className="page-subtitle">Self Reflecting System Pipeline</h2>
 
       <div className="editor-wrapper">

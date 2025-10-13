@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { configDotenv } from 'dotenv';
 
 export async function GET() {
     console.log("route GET called")
