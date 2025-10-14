@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
-import { fetchCodeFromGitHub, getUser, isUserSaved, pushCode, removeUser } from "./utils/util";
+import { createUser, fetchCodeFromGitHub, getUser, isUserSaved, pushCode, removeUser } from "./utils/util";
 
 export default function Home() {
   const [code, setCode] = useState("// LOADING PAGE ....");
@@ -59,7 +59,14 @@ export default function Home() {
 
       {/* PUSH COMMIT TO REPO BTN */}
       <button className="btn-pushcode" onClick={() => {
-        pushCode(username, userID, code, commitTag);
+        // Validating Input
+        var { isValidated, sanitizedUsername } = validateInput();
+        if (isValidated) {
+          // push updated code to API
+          pushCode(sanitizedUsername, userID, code, commitTag)
+        }else{
+          console.log("Input Not Validated")
+        }
         setIsUserPersisted(true);
       }}>Push Code</button>
     </main>
@@ -81,4 +88,30 @@ export default function Home() {
       setIsUserPersisted(true);
     }
   }
+
+  // hoisted inpt validation func declaration
+  function validateInput() {
+    const isNotEmpty = [code, username, userID, commitTag].every(
+      (val) => val != null && String(val).trim() !== ""
+    );
+
+    var sanitizedUsername = "";
+
+    if (isNotEmpty) {
+      // INPUT FIELDS ARE NOT EMPTY
+
+      // Remove leading dots
+      sanitizedUsername = username.replace(/^\.*/, "");
+
+      // Remove trailing slashes
+      sanitizedUsername = sanitizedUsername.replace(/\/+$/, "");
+
+      // replace spaces with dashes
+      sanitizedUsername = sanitizedUsername.replace(/\s+/g, "-");
+      setUsername(sanitizedUsername);
+    }
+
+    return { isValidated: isNotEmpty, sanitizedUsername: sanitizedUsername };
+  }
+
 }
