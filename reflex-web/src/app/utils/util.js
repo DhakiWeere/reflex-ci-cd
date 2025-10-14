@@ -20,11 +20,31 @@ export async function fetchCodeFromGitHub() {
 }
 
 // push code to [api/push-code]
-export function pushCode(username, userID) {
+export async function pushCode(username, userID, indexPgCode, commitTag) {
     // create / update users
-    createUser(username, userID)
+    createUser(username, userID);
 
     // async call to api
+    try{
+        const resp = await fetch("/api/push-code", {
+            method : "POST",
+            body : JSON.stringify({
+                username : username,
+                id : userID,
+                indexPgJSX : indexPgCode, 
+                commitTag : commitTag
+            })
+        });
+
+        if(!resp.ok){
+            console.Error("error pushing code", resp.status);
+        }
+        
+        console.log(await resp.json())
+
+    }catch(error){
+        console.error("Error trying to push code", error);
+    }
 }
 
 

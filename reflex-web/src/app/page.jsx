@@ -59,7 +59,7 @@ export default function Home() {
 
       {/* PUSH COMMIT TO REPO BTN */}
       <button className="btn-pushcode" onClick={() => {
-        pushCode(username, userID);
+        pushCode(username, userID, code, commitTag);
         setIsUserPersisted(true);
       }}>Push Code</button>
     </main>
