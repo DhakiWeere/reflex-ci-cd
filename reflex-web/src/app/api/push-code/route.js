@@ -20,21 +20,38 @@ export async function POST(req) {
         const branch_prod = process.env.GITHUB_PROD_REF;
         const branch_new = `user-branch/${username}-${userID}`;
 
-        // prod branch last ref commit
-        const refCommitProdLast = await octokit.git.getRef({
-            owner,
-            repo,
-            ref: `heads/${branch_prod}`
-        });
+        // user branch last commit ref declaration
+        var refCommitUserBranchLast;
 
-        // create new branch and ref commit
-        const refCommitUserBranchLast = await octokit.git.createRef({
-            owner,
-            repo,
-            ref: `refs/heads/${branch_new}`,
-            sha: refCommitProdLast.data.object.sha
-        });
+        // user branch exist ?
+        try {
+            refCommitUserBranchLast = await octokit.git.getRef({
+                owner,
+                repo,
+                ref: `heads/${branch_new}`
+            });
+            console.log("user branch found")
 
+        } catch (error) {
+            if (error.status === 404) {
+                // USER BRANCH DOES NOT EXIST
+                console.log("user branch was not found")
+
+                // prod branch last ref commit
+                const refCommitProdLast = await octokit.git.getRef({
+                    owner,
+                    repo,
+                    ref: `heads/${branch_prod}`
+                });
+                // create new branch and ref commit
+                refCommitUserBranchLast = await octokit.git.createRef({
+                    owner,
+                    repo,
+                    ref: `refs/heads/${branch_new}`,
+                    sha: refCommitProdLast.data.object.sha
+                });
+            }
+        }
 
         // Userbranch last Commit
         const { data: commitUserBranchLast } = await octokit.rest.git.getCommit({
@@ -85,8 +102,8 @@ export async function POST(req) {
 
         // response
         return NextResponse.json({
-            status : 201,
-            msg : `Successfully Added New Commit ${refCommitUserBranchNew.sha}`
+            status: 201,
+            msg: `Successfully Added New Commit ${refCommitUserBranchNew.sha}`
         });
 
     } catch (err) {
