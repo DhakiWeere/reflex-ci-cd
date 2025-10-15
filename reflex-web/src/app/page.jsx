@@ -16,9 +16,12 @@ export default function Home() {
 
   return (
     <main className="main-container">
-      {/* TITLE */}
-      <h1 className="page-title">Reflex CI / CD  </h1>
-
+      <div className="head-container">
+        {/* Logo Art */}
+        <img src="./logo_art.svg" height="60px" />
+        {/* TITLE */}
+        <h1 className="page-title">Reflex CI / CD  </h1>
+      </div>
       {/* SUBTILE */}
       <h2 className="page-subtitle">Self Reflecting System Pipeline</h2>
 

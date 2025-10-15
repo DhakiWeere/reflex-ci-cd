@@ -12,13 +12,22 @@
   font-family: Arial, sans-serif;
 }
 
+/* title | logo container */
+.head-container{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  column-gap: 10px;
+}
+
+
 /* title */
 .page-title {
   font-size: 3rem; 
   font-weight: bold;
-  margin-bottom: 1rem; 
   color: #111827; 
 }
+
 
 /* subtitle */
 .page-subtitle{
