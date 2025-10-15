@@ -64,11 +64,18 @@ export default function Home() {
         if (isValidated) {
           // push updated code to API
           pushCode(sanitizedUsername, userID, code, commitTag)
-        }else{
+        } else {
           console.log("Input Not Validated")
         }
         setIsUserPersisted(true);
       }}>Push Code</button>
+
+      {/* GitHub Activity Link */}
+      {isUserPersisted && <a href={`https://github.com/dhakiweere/reflex-ci-cd/activity?ref=user-branch/${username}-${userID}`}
+        target="_blank"
+        rel="noopener noreferrer">
+        GitHub Branch Activity
+      </a>}
     </main>
   );
 
