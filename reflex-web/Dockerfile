@@ -1,38 +1,35 @@
-# Stage 1: Build the Next.js app
-FROM node:18-alpine AS builder
+# Base
+FROM node:20-alpine AS base
 
-# Set working directory
+# Dep Stage
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
-
-# Copy package.json / lock file
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-# RUN npm ci
-RUN npm install
-
-# Copy rest of the app
+# Build Stage
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Build the Next.js project
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# runner stage
-FROM node:18-alpine AS runner
-
-# set working directory
+# Runner Stage
+FROM base AS runner
 WORKDIR /app
-
-# copy from builder stage
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/node_modules ./node_modules
-
-# ENV variables
 ENV NODE_ENV=production
 
-ENV GITHUB_TOKEN=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
+RUN addgroup --system --gid 1001 reflex
+RUN adduser --system --uid 1001 reflex
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=reflex:reflex /app/.next/standalone ./
+COPY --from=builder --chown=reflex:reflex /app/.next/static ./.next/static
+
+USER reflex
+
 ENV GITHUB_OWNER=dhakiweere
 ENV GITHUB_REPO=reflex-ci-cd
 ENV GITHUB_PROD_REF=dev
@@ -40,10 +37,9 @@ ENV GITHUB_PROD_REF=dev
 ENV FILE_PATH_INDEX=reflex-web/src/app/page.jsx
 ENV FILE_PATH_CSS=reflex-web/src/app/global.css
 
-# Expose your desired port (3000 by default)
+# |>>> DEV GitHub Token <<<|
+ENV GITHUB_TOKEN=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
+
 EXPOSE 3000
 
-# Start the app
-CMD ["npm", "run", "start", "--", "-p", "3000"]
-
-
+CMD ["node", "server.js"]
