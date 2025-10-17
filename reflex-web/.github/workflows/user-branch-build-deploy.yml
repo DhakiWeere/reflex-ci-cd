@@ -1,0 +1,49 @@
+on:
+  push:
+    branches:
+      - 'user-branch/**'   # Trigger on any branch that starts with 'user-branch/' 
+
+env:
+  AWS_REGION: ap-south-1                            # change to your region
+  ECR_REPOSITORY: 608160983820.dkr.ecr.ap-south-1.amazonaws.com/reflex-registry # ECR uri
+  IMAGE_TAG: latest                                 # or use github.sha for unique tags
+  EC2_HOST: ubuntu@43.204.246.33                    # EC2 SSH target
+  CONTAINER_NAME: reflex                             # name of container on EC2
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }} 
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push Docker image
+        run: |
+          IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:${{ env.IMAGE_TAG }}
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+      - name: SSH into EC2 and deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}  # private key from your GitHub Secrets
+          script: |
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+            docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO}}:${{ env.IMAGE_TAG }}
+            docker stop ${{ env.CONTAINER_NAME }} || true
+            docker rm ${{ env.CONTAINER_NAME }} || true
+            docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:80 ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
