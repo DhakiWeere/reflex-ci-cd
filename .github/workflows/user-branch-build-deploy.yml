@@ -37,7 +37,7 @@ jobs:
       - name: Build and Push Docker image
         run: |
           IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:${{ env.IMAGE_TAG }}
-          docker build -t $IMAGE_URI .
+          docker build -t $IMAGE_URI ./reflex-web/
           docker push $IMAGE_URI
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
