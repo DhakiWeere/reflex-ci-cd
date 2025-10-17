@@ -1,3 +1,5 @@
+name : Build and Deploy User-Branches to EC2
+
 on:
   push:
     branches:
@@ -6,6 +8,10 @@ on:
 env:
   IMAGE_TAG: latest                                 # or use github.sha for unique tags
   CONTAINER_NAME: reflex                             # name of container on EC2
+
+permissions:
+  id-token: write 
+  contents: read
 
 jobs:
   build-and-deploy:
