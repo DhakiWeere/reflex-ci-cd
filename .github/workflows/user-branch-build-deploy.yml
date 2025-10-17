@@ -12,6 +12,9 @@ env:
 
 jobs:
   build-and-deploy:
+    if: |
+      startsWith(github.ref, 'refs/heads/user-branch/') &&
+      github.event.created == false
     runs-on: ubuntu-latest
 
     steps:
