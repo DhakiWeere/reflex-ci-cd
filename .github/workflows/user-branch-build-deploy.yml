@@ -4,10 +4,7 @@ on:
       - 'user-branch/**'   # Trigger on any branch that starts with 'user-branch/' 
 
 env:
-  AWS_REGION: ap-south-1                            # change to your region
-  ECR_REPOSITORY: 608160983820.dkr.ecr.ap-south-1.amazonaws.com/reflex-registry # ECR uri
   IMAGE_TAG: latest                                 # or use github.sha for unique tags
-  EC2_HOST: ubuntu@43.204.246.33                    # EC2 SSH target
   CONTAINER_NAME: reflex                             # name of container on EC2
 
 jobs:
@@ -49,4 +46,4 @@ jobs:
             docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO}}:${{ env.IMAGE_TAG }}
             docker stop ${{ env.CONTAINER_NAME }} || true
             docker rm ${{ env.CONTAINER_NAME }} || true
-            docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:3000 ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+            docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:3000 ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
