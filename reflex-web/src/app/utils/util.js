@@ -1,5 +1,11 @@
 import Cookies from "js-cookie";
 
+// stateSetters
+export const stateSetters = {
+    setBranch : null,
+    setCommitSha: null,
+}
+
 // fetch code from github from [api/get-code]
 export async function fetchCodeFromGitHub() {
     try {
@@ -10,6 +16,10 @@ export async function fetchCodeFromGitHub() {
         }
         // JSON
         const jsonData = await response.json();
+
+        // set commit and branch
+        stateSetters.setBranch(jsonData.branch); 
+        stateSetters.setCommitSha(jsonData.commitSha);
 
         // return the code
         return jsonData.jsxContent;
@@ -25,26 +35,31 @@ export async function pushCode(username, userID, indexPgCode, commitTag) {
     createUser(username, userID);
 
     // async call to api
-    try{
+    try {
         const resp = await fetch("/api/push-code", {
-            method : "POST",
-            body : JSON.stringify({
-                username : username,
-                id : userID,
-                indexPgJSX : indexPgCode, 
-                commitTag : commitTag
+            method: "POST",
+            body: JSON.stringify({
+                username: username,
+                id: userID,
+                indexPgJSX: indexPgCode,
+                commitTag: commitTag
             })
         });
 
-        if(!resp.ok){
+        if (!resp.ok) {
             console.Error("error pushing code", resp.status);
         }
-        
+
         console.log(await resp.json())
 
-    }catch(error){
+    } catch (error) {
         console.error("Error trying to push code", error);
     }
+}
+
+// reset server locally
+export function resetServerContainer(){
+    console.log("reset server container pressed");
 }
 
 

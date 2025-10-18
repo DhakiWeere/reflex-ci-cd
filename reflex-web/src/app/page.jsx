@@ -1,18 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import Editor from "@monaco-editor/react";
-import { createUser, fetchCodeFromGitHub, getUser, isUserSaved, pushCode, removeUser } from "./utils/util";
+import { fetchCodeFromGitHub, getUser, isUserSaved, pushCode, removeUser, resetServerContainer } from "./utils/util";
+import { stateSetters } from "./utils/util";
 
 export default function Home() {
   const [code, setCode] = useState("// LOADING PAGE ....");
   const [username, setUsername] = useState("");
   const [commitTag, setCommitTag] = useState("");
   const [userID, setUserID] = useState(0);
+  const [branch, setBranch] = useState('');
+  const [commitSha, setCommitSha] = useState('');
   const [isUserPersisted, setIsUserPersisted] = useState(false);
 
   // init setup run 
-  useEffect(_setup, []);
+  // useEffect(_setup, []);
 
   return (
     <main className="main-container">
@@ -24,6 +27,14 @@ export default function Home() {
       </div>
       {/* SUBTILE */}
       <h2 className="page-subtitle">Self Reflecting System Pipeline</h2>
+
+      {/* Commit Details */}
+      <div className="container-commit-details">Viewing [ page.jsx ] of branch:{branch} | Commit:{commitSha}
+        {isUserPersisted && <button className="btn-reset-server" onClick={()=>{
+          // reset server container
+          resetServerContainer()
+        }}>Reset Server</button>}
+      </div>
 
       {/* EDITOR */}
       <div className="editor-wrapper">
@@ -84,6 +95,10 @@ export default function Home() {
 
   // hoisted setup function declaration
   function _setup() {
+    // state setters
+    stateSetters.setBranch = setBranch;
+    stateSetters.setCommitSha = setCommitSha;
+
     // load code content from github
     (async () => {
       const data = await fetchCodeFromGitHub();

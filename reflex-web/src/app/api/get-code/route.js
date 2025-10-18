@@ -8,6 +8,7 @@ export async function GET(request) {
       auth: process.env.GITHUB_TOKEN
     });
 
+
     // Fetch the file from GitHub
     const { data } = await octokit.repos.getContent({
       owner: process.env.GITHUB_OWNER,
@@ -26,7 +27,9 @@ export async function GET(request) {
       fileName: data.name,
       path: data.path,
       jsxContent: jsxContent,
-      sha: data.sha, // You'll need this for updates later
+      branch: process.env.GIT_BRANCH,
+      commitSha: process.env.GIT_COMMIT,
+      sha: data.sha, 
       size: data.size
     });
 
