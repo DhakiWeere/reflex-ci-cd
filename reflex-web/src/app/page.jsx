@@ -15,7 +15,7 @@ export default function Home() {
   const [isUserPersisted, setIsUserPersisted] = useState(false);
 
   // init setup run 
-  // useEffect(_setup, []);
+  useEffect(_setup, []);
 
   return (
     <main className="main-container">
