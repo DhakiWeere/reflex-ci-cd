@@ -2,8 +2,6 @@ name : Production Branch CD Workflow
 
 on:
   push:
-    branches:
-      - '*'   # Any branch decl. Check later if its prod branch 
     branches-ignore:
       - 'user-branch/*' # ignore if its a user-branch
 
