@@ -53,4 +53,4 @@ jobs:
             docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO}}:${{ env.IMAGE_TAG }}
             docker stop ${{ env.CONTAINER_NAME }} || true
             docker rm ${{ env.CONTAINER_NAME }} || true
-            docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:3000 ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:${{ env.IMAGE_TAG }}
+            docker run -d -e GITHUB_TOKEN=${{secrets.TOKEN_FG_GITHUB}} --name ${{ env.CONTAINER_NAME }} -p 80:3000 ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:${{ env.IMAGE_TAG }}

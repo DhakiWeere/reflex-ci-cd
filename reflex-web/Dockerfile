@@ -37,8 +37,6 @@ ENV GITHUB_PROD_REF=dev
 ENV FILE_PATH_INDEX=reflex-web/src/app/page.jsx
 ENV FILE_PATH_CSS=reflex-web/src/app/global.css
 
-# |>>> DEV GitHub Token <<<|
-ENV GITHUB_TOKEN=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
 
 EXPOSE 3000
 
