@@ -58,9 +58,9 @@ jobs:
             docker rm ${{ env.CONTAINER_NAME }} || true
 
             docker run -d  \ 
-              -e GITHUB_TOKEN=${{secrets.TOKEN_FG_GITHUB}}
-              -e GIT_BRANCH=${{github.ref_name}} 
-              -e GIT_COMMIT=${{github.sha}}
-              --name ${{ env.CONTAINER_NAME }} 
-              -p 80:3000 
+              -e GITHUB_TOKEN=${{secrets.TOKEN_FG_GITHUB}} \
+              -e GIT_BRANCH=${{github.ref_name}} \
+              -e GIT_COMMIT=${{github.sha}} \
+              --name ${{ env.CONTAINER_NAME }} \ 
+              -p 80:3000  \
               ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:${{ env.IMAGE_TAG }}
