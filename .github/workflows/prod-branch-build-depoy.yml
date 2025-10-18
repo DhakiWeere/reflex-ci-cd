@@ -3,7 +3,9 @@ name : Production Branch CD Workflow
 on:
   push:
     branches:
-      - '${{ vars.PROD_BRANCH }}'   # Trigger on prod branch commit' 
+      - '*'   # Any branch decl. Check later if its prod branch 
+    branches-ignore:
+      - 'user-branch/*' # ignore if its a user-branch
 
 env:
   IMAGE_TAG: stable                                
@@ -16,9 +18,8 @@ permissions:
 
 jobs:
   build-and-deploy:
-    if: ${{ vars.STABLE_CD_RUN == 'true' }}
-
     runs-on: ubuntu-latest
+    if: ${{ vars.STABLE_CD_RUN == 'true' && github.ref_name == vars.PROD_BRANCH }}
     
     steps:
       - name: Checkout repository
