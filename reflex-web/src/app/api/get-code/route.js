@@ -14,7 +14,7 @@ export async function GET(request) {
       repo: process.env.GITHUB_REPO,
       path: process.env.FILE_PATH_INDEX,
        // branch
-      ref: process.env.GITHUB_PROD_REF,
+      ref: process.env.GIT_BRANCH,
     });
 
     // Decode the base64 content
