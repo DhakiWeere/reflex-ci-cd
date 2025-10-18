@@ -5,6 +5,8 @@ on:
     branches-ignore:
       - 'user-branch/*' # ignore if its a user-branch
 
+  workflow_dispatch:
+
 env:
   IMAGE_TAG: stable                                
   CONTAINER_NAME: reflex-stable   # name of container on EC2
