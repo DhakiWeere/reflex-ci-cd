@@ -1,0 +1,68 @@
+name : Production Branch CD Workflow
+
+on:
+  push:
+    branches-ignore:
+      - 'user-branch/*' # ignore if its a user-branch
+
+  workflow_dispatch:
+
+env:
+  IMAGE_TAG: stable                                
+  CONTAINER_NAME: reflex-stable   # name of container on EC2
+  CONTAINER_LATEST_NAME : reflex-latest # name of the User Container on EC2
+
+permissions:
+  id-token: write 
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    if: ${{ vars.STABLE_CD_RUN == 'true' && github.ref_name == vars.PROD_BRANCH }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }} 
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push Docker image
+        working-directory: reflex-web
+        run: |
+          IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:${{ env.IMAGE_TAG }}
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+      - name: SSH into EC2 and deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu 
+          key: ${{ secrets.EC2_SSH_KEY }}  
+          script: |
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+            docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO}}:${{ env.IMAGE_TAG }}
+
+            docker stop ${{ env.CONTAINER_LATEST_NAME }} || true
+            docker rm ${{ env.CONTAINER_LATEST_NAME}} || true
+
+            docker stop ${{ env.CONTAINER_NAME }} || true
+            docker rm ${{ env.CONTAINER_NAME }} || true
+
+            docker run -d  \
+              -e GITHUB_TOKEN=${{secrets.TOKEN_FG_GITHUB}} \
+              -e GIT_BRANCH=${{github.ref_name}} \
+              -e GIT_COMMIT=${{github.sha}} \
+              --name ${{ env.CONTAINER_NAME }} \
+              -p 80:3000  \
+              ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:${{ env.IMAGE_TAG }}

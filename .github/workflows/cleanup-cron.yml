@@ -1,0 +1,39 @@
+name: Cleanup & Reset Server
+
+# Trigger every 12 hours 
+on:
+  schedule:
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
+
+jobs:
+  branch-cleanup-and-server-reset:
+    runs-on: ubuntu-latest
+    env:
+      CONTAINER_NAME: reflex-stable
+      CONTAINER_LATEST_NAME: reflex-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Delete branches matching "user-branch/"
+        run: |
+          git fetch --prune origin
+          for branch in $(git branch -r | grep 'origin/user-branch/' | sed 's|origin/||'); do
+            echo "Deleting branch $branch"
+            git push origin --delete "$branch"
+          done
+
+      - name: SSH into EC2 and reset running container
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ubuntu
+          key: ${{secrets.EC2_SSH_KEY}}
+          script: |
+            docker stop ${{env.CONTAINER_LATEST_NAME}} || true
+            docker stop ${{env.CONTAINER_NAME}} || true
+
+            docker start ${{env.CONTAINER_NAME}}
+

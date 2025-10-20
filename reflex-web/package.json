@@ -1,0 +1,19 @@
+{
+  "name": "reflex-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "@octokit/rest": "^22.0.0",
+    "dotenv": "^17.2.3",
+    "js-cookie": "^3.0.5",
+    "next": "15.5.4",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  }
+}
