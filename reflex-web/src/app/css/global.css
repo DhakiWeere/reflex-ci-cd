@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* global.css  */
 
 /* Main page container */
@@ -7,13 +9,13 @@
   flex-direction: column;
   align-items: start;
   justify-content: flex-start;
-  padding: 1rem; 
+  padding: 1rem;
   background-color: #f3f4f6;
   font-family: Arial, sans-serif;
 }
 
 /* title | logo container */
-.head-container{
+.head-container {
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -23,38 +25,37 @@
 
 /* title */
 .page-title {
-  font-size: 3rem; 
+  font-size: 3rem;
   font-weight: bold;
-  color: #111827; 
+  @apply text-red-500
 }
 
 
 /* subtitle */
-.page-subtitle{
-  color : black;
+.page-subtitle {
+  color: black;
   font-size: 2rem;
 }
 
 /* Editor container */
 .editor-wrapper {
   width: 100%;
-  max-width: 960px; 
+  max-width: 960px;
   height: 500px;
-  border: 1px solid #d1d5db; 
-  border-radius: 0.5rem; 
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
 
 /* push code  btn */
-.btn-pushcode{
+.btn-pushcode {
   background-color: #2a2a2a;
-  color : white;
-  padding : 0.5rem;
-  border-radius : 7px 
+  color: white;
+  padding: 0.5rem;
+  border-radius: 7px
 }
 
 /* Push details container */
-.push-details-container{}
-
+.push-details-container {}

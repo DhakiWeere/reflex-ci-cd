@@ -12,7 +12,8 @@ export async function fetchCodeFromGitHub() {
         const response = await fetch('/api/get-code');
         // response success ?
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            // console.error(`HTTP error! status: ${response.status}`);
+            return;
         }
         // JSON
         const jsonData = await response.json();

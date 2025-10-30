@@ -18,78 +18,80 @@ export default function Home() {
   useEffect(_setup, []);
 
   return (
-    <main className="main-container">
-      <div className="head-container">
-        {/* Logo Art */}
-        <img src="./logo_art.svg" height="60px" />
-        {/* TITLE */}
-        <h1 className="page-title">Reflex CI / CD  </h1>
+    <main className="bg-fuchsia-300 w-full h-screen overflow-y-scroll flex flex-row justify-center">
+      <div className="bg-green-400 w-full max-w-5xl flex flex-col gap-y-3">
+        <div className="header-container">
+          {/* Logo Art */}
+          <img src="./logo_art.svg" height="60px" />
+          {/* TITLE */}
+          <h1 className="text-lime-300 page-title">Reflex CI / CD  </h1>
+        </div>
+        {/* SUBTILE */}
+        <h2 className="page-subtitle">Self Reflecting System Pipeline</h2>
+
+        {/* Commit Details */}
+        <div className="container-commit-details">Viewing [ page.jsx ] of branch:{branch} | Commit:{commitSha}
+          {isUserPersisted && <button className="btn-reset-server" onClick={() => {
+            // reset server container
+            resetServerContainer()
+          }}>Reset Server</button>}
+        </div>
+
+        {/* EDITOR */}
+        <div className="editor-wrapper">
+          <Editor
+            height="100%"
+            defaultLanguage="javascript"
+            value={code}
+            theme="vs-dark"
+            onChange={(value) => setCode(value || "")}
+          />
+        </div>
+
+        {/* DETAILS */}
+        <div className="push-details-container">
+          {/* lbl username */}
+          <div>Username</div>
+          {/* username input */}
+          <input type="text" value={username} onChange={(v) => {
+            setUsername(v.target.value)
+            setUserID(Math.floor(Math.random() * 99999));
+          }} />
+          {/* user id auto generate field */}
+          {username && <input value={userID} readOnly={true} />}
+          {/* delete user button */}
+          {isUserPersisted && <button onClick={() => {
+            removeUser();
+            setUsername(""); setCommitTag(""); setUserID(0);
+            setIsUserPersisted(false);
+          }}>Remove User</button>}
+
+          {/* lbl Commit tag */}
+          <div>Commit Tag</div>
+          {/* commit tag input */}
+          <input type="text" value={commitTag} onChange={(v) => setCommitTag(v.target.value)} />
+        </div>
+
+        {/* PUSH COMMIT TO REPO BTN */}
+        <button className="btn-pushcode" onClick={() => {
+          // Validating Input
+          var { isValidated, sanitizedUsername } = validateInput();
+          if (isValidated) {
+            // push updated code to API
+            pushCode(sanitizedUsername, userID, code, commitTag)
+          } else {
+            console.log("Input Not Validated")
+          }
+          setIsUserPersisted(true);
+        }}>Push Code</button>
+
+        {/* GitHub Activity Link */}
+        {isUserPersisted && <a href={`https://github.com/dhakiweere/reflex-ci-cd/activity?ref=user-branch/${username}-${userID}`}
+          target="_blank"
+          rel="noopener noreferrer">
+          GitHub Branch Activity
+        </a>}
       </div>
-      {/* SUBTILE */}
-      <h2 className="page-subtitle">Self Reflecting System Pipeline</h2>
-
-      {/* Commit Details */}
-      <div className="container-commit-details">Viewing [ page.jsx ] of branch:{branch} | Commit:{commitSha}
-        {isUserPersisted && <button className="btn-reset-server" onClick={()=>{
-          // reset server container
-          resetServerContainer()
-        }}>Reset Server</button>}
-      </div>
-
-      {/* EDITOR */}
-      <div className="editor-wrapper">
-        <Editor
-          height="100%"
-          defaultLanguage="javascript"
-          value={code}
-          theme="vs-dark"
-          onChange={(value) => setCode(value || "")}
-        />
-      </div>
-
-      {/* DETAILS */}
-      <div className="push-details-container">
-        {/* lbl username */}
-        <div>Username</div>
-        {/* username input */}
-        <input type="text" value={username} onChange={(v) => {
-          setUsername(v.target.value)
-          setUserID(Math.floor(Math.random() * 99999));
-        }} />
-        {/* user id auto generate field */}
-        {username && <input value={userID} readOnly={true} />}
-        {/* delete user button */}
-        {isUserPersisted && <button onClick={() => {
-          removeUser();
-          setUsername(""); setCommitTag(""); setUserID(0);
-          setIsUserPersisted(false);
-        }}>Remove User</button>}
-
-        {/* lbl Commit tag */}
-        <div>Commit Tag</div>
-        {/* commit tag input */}
-        <input type="text" value={commitTag} onChange={(v) => setCommitTag(v.target.value)} />
-      </div>
-
-      {/* PUSH COMMIT TO REPO BTN */}
-      <button className="btn-pushcode" onClick={() => {
-        // Validating Input
-        var { isValidated, sanitizedUsername } = validateInput();
-        if (isValidated) {
-          // push updated code to API
-          pushCode(sanitizedUsername, userID, code, commitTag)
-        } else {
-          console.log("Input Not Validated")
-        }
-        setIsUserPersisted(true);
-      }}>Push Code</button>
-
-      {/* GitHub Activity Link */}
-      {isUserPersisted && <a href={`https://github.com/dhakiweere/reflex-ci-cd/activity?ref=user-branch/${username}-${userID}`}
-        target="_blank"
-        rel="noopener noreferrer">
-        GitHub Branch Activity
-      </a>}
     </main>
   );
 
