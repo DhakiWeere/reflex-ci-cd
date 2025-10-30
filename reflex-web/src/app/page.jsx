@@ -13,13 +13,18 @@ export default function Home() {
   const [branch, setBranch] = useState('');
   const [commitSha, setCommitSha] = useState('');
   const [isUserPersisted, setIsUserPersisted] = useState(false);
+  const [nortificationAreaVisible, setNortificationAreaVisible] = useState(true);
+  const [nortificationArr, setNortificationArr] = useState(["things 1", "things 2", "things 3"]);
 
   // init setup run 
   useEffect(_setup, []);
 
+  // nortification update
+  useEffect(_nortificationUpdate, [nortificationArr]);
+
   return (
     <main className="bg-fuchsia-300 w-full h-screen overflow-y-scroll flex flex-row justify-center">
-      <div className="bg-green-400 w-full max-w-5xl flex flex-col gap-y-3">
+      <div className="bg-green-400 w-full max-w-5xl flex flex-col gap-y-3 p-3">
         <div className="header-container">
           {/* Logo Art */}
           <img src="./logo_art.svg" height="60px" />
@@ -91,6 +96,30 @@ export default function Home() {
           rel="noopener noreferrer">
           GitHub Branch Activity
         </a>}
+
+        {/* message windows */}
+        <div className="w-fit h-full bg-[#002a2a2a] fixed right-0 top-0 z-20 duration-300 
+        flex flex-row
+        ">
+          {/* expand button */}
+          <button className="bg-amber-400 w-fit h-fit p-3 sticky right-0 top-0" onClick={() => {
+            console.log("close click")
+            setNortificationAreaVisible(!nortificationAreaVisible);
+          }}>close
+          </button>
+
+          {/* nortification area */}
+          <div>
+            <ul className={`${nortificationAreaVisible ? "block" : "hidden"}
+            w-fit h-full bg-blue-300 flex flex-col-reverse justify-start
+            `}>
+              {nortificationArr.map(msg => (<li key={nortificationArr.indexOf(msg)}>{msg}</li>))}
+            </ul>
+          </div>
+
+        </div>
+
+        <p>{nortificationAreaVisible ? "is visible" : "is not visible"}</p>
       </div>
     </main>
   );
@@ -114,6 +143,11 @@ export default function Home() {
       setUserID(userObj.id);
       setIsUserPersisted(true);
     }
+  }
+
+  // nortification update function declaration
+  function _nortificationUpdate() {
+
   }
 
   // hoisted inpt validation func declaration
