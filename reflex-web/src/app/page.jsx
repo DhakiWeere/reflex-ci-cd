@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { fetchCodeFromGitHub, getUser, isUserSaved, pushCode, removeUser, resetServerContainer } from "./utils/util";
-import { stateSetters } from "./utils/util";
 
 export default function Home() {
+  const isFirstRun = useRef(true);
   const [code, setCode] = useState("// LOADING PAGE ....");
   const [username, setUsername] = useState("");
   const [commitTag, setCommitTag] = useState("");
@@ -13,14 +13,21 @@ export default function Home() {
   const [branch, setBranch] = useState('');
   const [commitSha, setCommitSha] = useState('');
   const [isUserPersisted, setIsUserPersisted] = useState(false);
-  const [nortificationAreaVisible, setNortificationAreaVisible] = useState(true);
-  const [nortificationArr, setNortificationArr] = useState(["things 1", "things 2", "things 3"]);
+  const [nortificationAreaVisible, setNortificationAreaVisible] = useState(false);
+  const [nortificationArr, setNortificationArr] = useState([]);
+
 
   // init setup run 
   useEffect(_setup, []);
 
   // nortification update
-  useEffect(_nortificationUpdate, [nortificationArr]);
+  useEffect(()=>{
+    if(isFirstRun.current){
+      isFirstRun.current = false;
+      return;
+    }
+    _nortificationUpdate();
+  }, [nortificationArr]);
 
   return (
     <main className="bg-fuchsia-300 w-full h-screen overflow-y-scroll flex flex-row justify-center">
@@ -98,11 +105,11 @@ export default function Home() {
         </a>}
 
         {/* message windows */}
-        <div className="w-fit h-full bg-[#002a2a2a] fixed right-0 top-0 z-20 duration-300 
+        <div className="w-fit h-full bg-[#002a2a2a] fixed right-0 top-0 z-20 
         flex flex-row
         ">
           {/* expand button */}
-          <button className="bg-amber-400 w-fit h-fit p-3 sticky right-0 top-0" onClick={() => {
+          <button className="bg-amber-400 w-fit h-fit p-3 sticky right-0 bottom-0" onClick={() => {
             console.log("close click")
             setNortificationAreaVisible(!nortificationAreaVisible);
           }}>close
@@ -110,10 +117,11 @@ export default function Home() {
 
           {/* nortification area */}
           <div>
-            <ul className={`${nortificationAreaVisible ? "block" : "hidden"}
-            w-fit h-full bg-blue-300 flex flex-col-reverse justify-start
+            <ul className={`${nortificationAreaVisible ? "max-w-96" : "max-w-0"}
+            h-full bg-blue-300 flex flex-col justify-end duration-300 overflow-hidden
             `}>
-              {nortificationArr.map(msg => (<li key={nortificationArr.indexOf(msg)}>{msg}</li>))}
+              {console.log(nortificationArr)}
+              {nortificationArr.map( obj => (<li key={nortificationArr.indexOf(nortificationArr.indexOf((obj)))}>{obj.nTime + " " + obj.nMsg}</li>))}
             </ul>
           </div>
 
@@ -126,13 +134,9 @@ export default function Home() {
 
   // hoisted setup function declaration
   function _setup() {
-    // state setters
-    stateSetters.setBranch = setBranch;
-    stateSetters.setCommitSha = setCommitSha;
-
     // load code content from github
     (async () => {
-      const data = await fetchCodeFromGitHub();
+      const data = await fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortification);
       setCode(data);
     })();
 
@@ -147,7 +151,19 @@ export default function Home() {
 
   // nortification update function declaration
   function _nortificationUpdate() {
+    if (!nortificationAreaVisible ) {
+      setNortificationAreaVisible(true);
+      setTimeout(() => setNortificationAreaVisible(false), 2000);
+    }
+  }
 
+  // add new nortification
+  function addNewNortification(msg){
+    let date = new Date();
+    setNortificationArr([...nortificationArr, {
+      nTime: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+      nMsg: msg 
+    }]);
   }
 
   // hoisted inpt validation func declaration

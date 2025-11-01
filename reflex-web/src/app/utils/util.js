@@ -1,27 +1,23 @@
 import Cookies from "js-cookie";
 
-// stateSetters
-export const stateSetters = {
-    setBranch : null,
-    setCommitSha: null,
-}
-
 // fetch code from github from [api/get-code]
-export async function fetchCodeFromGitHub() {
+export async function fetchCodeFromGitHub(setBranch, setCommitSha, addNortification) {
     try {
         const response = await fetch('/api/get-code');
         // response success ?
         if (!response.ok) {
-            // console.error(`HTTP error! status: ${response.status}`);
+            addNortification(`Error fetching code from github : ${response.statusText}`)
             return;
         }
         // JSON
         const jsonData = await response.json();
 
         // set commit and branch
-        stateSetters.setBranch(jsonData.branch); 
-        stateSetters.setCommitSha(jsonData.commitSha);
+        setBranch(jsonData.branch); 
+        setCommitSha(jsonData.commitSha);
 
+        // add nortification
+        addNortification("Code Fetch from Github Successfull")
         // return the code
         return jsonData.jsxContent;
     } catch (error) {
