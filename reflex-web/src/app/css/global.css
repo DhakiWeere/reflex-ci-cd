@@ -2,60 +2,43 @@
 
 /* global.css  */
 
-/* Main page container */
-.main-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: flex-start;
-  padding: 1rem;
-  background-color: #f3f4f6;
-  font-family: Arial, sans-serif;
+@layer components {
+  .container-top {
+    @apply flex flex-col justify-start items-center overflow-y-scroll;
+  }
+
+  .container-header {
+    @apply flex flex-row items-center gap-x-2 p-2 px-3
+  }
+
+  .container-actual {
+    @apply flex flex-col gap-y-7 justify-start p-3;
+  }
+
+  .container-pg1 {
+    @apply flex flex-col gap-y-4
+  }
+
+  .btn {
+    @apply cursor-pointer duration-300 hover:scale-110
+  }
+
+  /* Editor container */
+  .editor-wrapper {
+    width: 100%;
+    max-width: 960px;
+    height: 500px;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  /* push code  btn */
+  .btn-pushcode {
+    background-color: #2a2a2a;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 7px
+  }
 }
-
-/* title | logo container */
-.head-container {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  column-gap: 10px;
-}
-
-
-/* title */
-.page-title {
-  font-size: 3rem;
-  font-weight: bold;
-  @apply text-red-500
-}
-
-
-/* subtitle */
-.page-subtitle {
-  color: black;
-  font-size: 2rem;
-}
-
-/* Editor container */
-.editor-wrapper {
-  width: 100%;
-  max-width: 960px;
-  height: 500px;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-
-/* push code  btn */
-.btn-pushcode {
-  background-color: #2a2a2a;
-  color: white;
-  padding: 0.5rem;
-  border-radius: 7px
-}
-
-/* Push details container */
-.push-details-container {}

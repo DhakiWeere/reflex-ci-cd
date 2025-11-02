@@ -21,91 +21,120 @@ export default function Home() {
   useEffect(_setup, []);
 
   // nortification update
-  useEffect(()=>{
-    if(isFirstRun.current){
-      isFirstRun.current = false;
-      return;
-    }
-    _nortificationUpdate();
-  }, [nortificationArr]);
+  // useEffect(() => {
+  //   if (isFirstRun.current) {
+  //     isFirstRun.current = false;
+  //     return;
+  //   }
+  //   _nortificationUpdate();
+  // }, [nortificationArr]);
 
   return (
-    <main className="bg-fuchsia-300 w-full h-screen overflow-y-scroll flex flex-row justify-center">
-      <div className="bg-green-400 w-full max-w-5xl flex flex-col gap-y-3 p-3">
-        <div className="header-container">
-          {/* Logo Art */}
-          <img src="./logo_art.svg" height="60px" />
-          {/* TITLE */}
-          <h1 className="text-lime-300 page-title">Reflex CI / CD  </h1>
-        </div>
-        {/* SUBTILE */}
-        <h2 className="page-subtitle">Self Reflecting System Pipeline</h2>
+    <div className="bg-fuchsia-300 container-top w-full h-screen overflow-y-scroll">
 
-        {/* Commit Details */}
-        <div className="container-commit-details">Viewing [ page.jsx ] of branch:{branch} | Commit:{commitSha}
-          {isUserPersisted && <button className="btn-reset-server" onClick={() => {
-            // reset server container
-            resetServerContainer()
-          }}>Reset Server</button>}
-        </div>
+      {/* HEADER */}
+      <header className="bg-red-600 container-header w-full h-[10vh] sticky top-0 left-0">
+        {/* Logo Art */}
+        <img src="./logo_art.svg" className="h-10" />
+        {/* TITLE */}
+        <h1 className="text-4xl">Reflex CI / CD</h1>
+      </header>
 
-        {/* EDITOR */}
-        <div className="editor-wrapper">
-          <Editor
-            height="100%"
-            defaultLanguage="javascript"
-            value={code}
-            theme="vs-dark"
-            onChange={(value) => setCode(value || "")}
-          />
-        </div>
+      {/* CONTAINER-ACTUAL */}
+      <main className="bg-green-400 container-actual max-w-7xl w-full">
 
-        {/* DETAILS */}
-        <div className="push-details-container">
-          {/* lbl username */}
-          <div>Username</div>
-          {/* username input */}
-          <input type="text" value={username} onChange={(v) => {
-            setUsername(v.target.value)
-            setUserID(Math.floor(Math.random() * 99999));
-          }} />
-          {/* user id auto generate field */}
-          {username && <input value={userID} readOnly={true} />}
-          {/* delete user button */}
-          {isUserPersisted && <button onClick={() => {
-            removeUser();
-            setUsername(""); setCommitTag(""); setUserID(0);
-            setIsUserPersisted(false);
-          }}>Remove User</button>}
+        {/* CONTAINER PG 1 */}
+        <div className="bg-purple-500 container-pg1 w-full h-[90vh]">
+          <div className="bg-blue-500 w-full h-fit">
+            {/* subtitle*/}
+            <h2 className="page-subtitle">Self Reflecting System Pipeline</h2>
+            {/* desc */}
+            <p className="text-md flex flex-col items-end">
+              This project is a concept demonstration of a full-duplex CI/CD pipeline, exploring how deployment
+              pipelines can evolve beyond the traditional one-way flow. In a typical setup, changes move from
+              the GitHub repository to the running application. Here, the process is bidirectional — the web
+              application itself can push commits or configuration updates back to the GitHub repo, which in
+              turn triggers GitHub Actions workflows, creating a self-sustaining feedback loop.
+            </p>
+          </div>
+          <div className="h-fit flex-1"></div>
+          <div className="bg-cyan-600 min-h-11 flex flex-col justify-center items-center">
+            <p>Start to Edit the code</p>
+            <button className="btn">Edit code</button>
+          </div>
 
-          {/* lbl Commit tag */}
-          <div>Commit Tag</div>
-          {/* commit tag input */}
-          <input type="text" value={commitTag} onChange={(v) => setCommitTag(v.target.value)} />
         </div>
 
-        {/* PUSH COMMIT TO REPO BTN */}
-        <button className="btn-pushcode" onClick={() => {
-          // Validating Input
-          var { isValidated, sanitizedUsername } = validateInput();
-          if (isValidated) {
-            // push updated code to API
-            pushCode(sanitizedUsername, userID, code, commitTag)
-          } else {
-            console.log("Input Not Validated")
-          }
-          setIsUserPersisted(true);
-        }}>Push Code</button>
+        {/* CONTAINER PG 2*/}
+        <div className="bg-amber-500 container-pg2 w-full h-[90vh]">
 
-        {/* GitHub Activity Link */}
-        {isUserPersisted && <a href={`https://github.com/dhakiweere/reflex-ci-cd/activity?ref=user-branch/${username}-${userID}`}
-          target="_blank"
-          rel="noopener noreferrer">
-          GitHub Branch Activity
-        </a>}
+          {/* Commit Details */}
+          <div className="container-commit-details">Viewing [ page.jsx ] of branch:{branch} | Commit:{commitSha}
+            {isUserPersisted && <button className="btn-reset-server" onClick={() => {
+              // reset server container
+              resetServerContainer()
+            }}>Reset Server</button>}
+          </div>
+
+          {/* EDITOR */}
+          <div className="editor-wrapper">
+            <Editor
+              height="100%"
+              defaultLanguage="javascript"
+              value={code}
+              theme="vs-dark"
+              onChange={(value) => setCode(value || "")}
+            />
+          </div>
+
+          {/* DETAILS */}
+          <div className="push-details-container">
+            {/* lbl username */}
+            <div>Username</div>
+            {/* username input */}
+            <input type="text" value={username} onChange={(v) => {
+              setUsername(v.target.value)
+              setUserID(Math.floor(Math.random() * 99999));
+            }} />
+            {/* user id auto generate field */}
+            {username && <input value={userID} readOnly={true} />}
+            {/* delete user button */}
+            {isUserPersisted && <button onClick={() => {
+              removeUser();
+              setUsername(""); setCommitTag(""); setUserID(0);
+              setIsUserPersisted(false);
+            }}>Remove User</button>}
+
+            {/* lbl Commit tag */}
+            <div>Commit Tag</div>
+            {/* commit tag input */}
+            <input type="text" value={commitTag} onChange={(v) => setCommitTag(v.target.value)} />
+          </div>
+
+          {/* PUSH COMMIT TO REPO BTN */}
+          <button className="btn-pushcode" onClick={() => {
+            // Validating Input
+            var { isValidated, sanitizedUsername } = validateInput();
+            if (isValidated) {
+              // push updated code to API
+              pushCode(sanitizedUsername, userID, code, commitTag)
+            } else {
+              console.log("Input Not Validated")
+            }
+            setIsUserPersisted(true);
+          }}>Push Code</button>
+
+          {/* GitHub Activity Link */}
+          {isUserPersisted && <a href={`https://github.com/dhakiweere/reflex-ci-cd/activity?ref=user-branch/${username}-${userID}`}
+            target="_blank"
+            rel="noopener noreferrer">
+            GitHub Branch Activity
+          </a>}
+
+        </div>
 
         {/* message windows */}
-        <div className="w-fit h-full bg-[#002a2a2a] fixed right-0 top-0 z-20 
+        <div className="w-fit h-full bg-[#002a2a2a] fixed right-0 top-0 z-20
         flex flex-row
         ">
           {/* expand button */}
@@ -121,15 +150,16 @@ export default function Home() {
             h-full bg-blue-300 flex flex-col justify-end duration-300 overflow-hidden
             `}>
               {console.log(nortificationArr)}
-              {nortificationArr.map( obj => (<li key={nortificationArr.indexOf(nortificationArr.indexOf((obj)))}>{obj.nTime + " " + obj.nMsg}</li>))}
+              {nortificationArr.map(obj => (<li className="w-[35ch]" key={nortificationArr.indexOf(nortificationArr.indexOf((obj)))}>{obj.nTime + " " + obj.nMsg}</li>))}
             </ul>
           </div>
 
         </div>
 
-        <p>{nortificationAreaVisible ? "is visible" : "is not visible"}</p>
-      </div>
-    </main>
+
+
+      </main>
+    </div>
   );
 
   // hoisted setup function declaration
@@ -151,18 +181,18 @@ export default function Home() {
 
   // nortification update function declaration
   function _nortificationUpdate() {
-    if (!nortificationAreaVisible ) {
+    if (!nortificationAreaVisible) {
       setNortificationAreaVisible(true);
       setTimeout(() => setNortificationAreaVisible(false), 2000);
     }
   }
 
   // add new nortification
-  function addNewNortification(msg){
+  function addNewNortification(msg) {
     let date = new Date();
     setNortificationArr([...nortificationArr, {
       nTime: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
-      nMsg: msg 
+      nMsg: msg
     }]);
   }
 
