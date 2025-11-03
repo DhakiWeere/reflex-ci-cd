@@ -1,14 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Momo+Trust+Display&display=swap');
 @import "tailwindcss";
 
 /* global.css  */
 
+@theme {
+  --color-main: #0d021c;
+  /* --color-main: blue; */
+  --color-accent: #F25912;
+
+  --font-momo: 'Momo Trust Display';
+  --font-inconsolata: "Inconsolata";
+}
+
+@layer base {
+  * {
+    @apply text-white font-inconsolata
+  }
+}
+
+
 @layer components {
   .container-top {
-    @apply flex flex-col justify-start items-center overflow-y-scroll;
+    @apply bg-main flex flex-col justify-start items-center overflow-y-scroll;
   }
 
   .container-header {
-    @apply flex flex-row items-center gap-x-2 p-2 px-3
+    @apply bg-main border-b-2 border-accent flex flex-row items-center gap-x-2 p-2 px-3
   }
 
   .container-actual {
@@ -16,12 +33,29 @@
   }
 
   .container-pg1 {
-    @apply flex flex-col gap-y-4
+    @apply flex flex-col gap-y-4 justify-start items-start p-3
   }
 
-  .btn {
-    @apply cursor-pointer duration-300 hover:scale-110
+  .title {
+    @apply text-accent font-momo font-bold text-3xl
   }
+
+  .subtitle {
+    @apply  text-white text-5xl font-bold
+  }
+
+  .accent-btn {
+    @apply cursor-pointer duration-150 bg-accent text-white rounded-4xl font-momo border-2 border-transparent
+  }
+
+  .accent-btn:hover {
+    @apply scale-110 bg-amber-50 text-accent border-accent
+  }
+
+  .accent-btn:active {
+    @apply scale-105
+  }
+
 
   /* Editor container */
   .editor-wrapper {

@@ -30,26 +30,26 @@ export default function Home() {
   // }, [nortificationArr]);
 
   return (
-    <div className="bg-fuchsia-300 container-top w-full h-screen overflow-y-scroll">
+    <div className="container-top w-full h-screen overflow-y-scroll">
 
       {/* HEADER */}
-      <header className="bg-red-600 container-header w-full h-[10vh] sticky top-0 left-0">
+      <header className="container-header w-full h-[10vh] sticky top-0 left-0">
         {/* Logo Art */}
-        <img src="./logo_art.svg" className="h-10" />
+        <img src="./logo_art.svg" className="h-10 bg-accent" />
         {/* TITLE */}
-        <h1 className="text-4xl">Reflex CI / CD</h1>
+        <h1 className="title">Reflex CI / CD</h1>
       </header>
 
       {/* CONTAINER-ACTUAL */}
-      <main className="bg-green-400 container-actual max-w-7xl w-full">
+      <main className="container-actual max-w-7xl w-full">
 
         {/* CONTAINER PG 1 */}
-        <div className="bg-purple-500 container-pg1 w-full h-[90vh]">
-          <div className="bg-blue-500 w-full h-fit">
+        <div className="container-pg1 w-full h-[90vh]">
+          <div className="flex flex-col gap-y-3 w-full h-fit">
             {/* subtitle*/}
-            <h2 className="page-subtitle">Self Reflecting System Pipeline</h2>
+            <h2 className="subtitle w-full text-start">Self<br /> Reflecting<br /> System<br /> Pipeline</h2>
             {/* desc */}
-            <p className="text-md flex flex-col items-end">
+            <p className="h-full w-[40ch] text-md font-semibold flex flex-col text-start">
               This project is a concept demonstration of a full-duplex CI/CD pipeline, exploring how deployment
               pipelines can evolve beyond the traditional one-way flow. In a typical setup, changes move from
               the GitHub repository to the running application. Here, the process is bidirectional — the web
@@ -58,15 +58,18 @@ export default function Home() {
             </p>
           </div>
           <div className="h-fit flex-1"></div>
-          <div className="bg-cyan-600 min-h-11 flex flex-col justify-center items-center">
-            <p>Start to Edit the code</p>
-            <button className="btn">Edit code</button>
-          </div>
+          <button className="w-fit h-fit p-4 accent-btn" onClick={() => {
+            document.getElementById('c-pg2').scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }}>Start Editing</button>
+          <div className="flex-1"></div>
 
         </div>
 
         {/* CONTAINER PG 2*/}
-        <div className="bg-amber-500 container-pg2 w-full h-[90vh]">
+        <div id="c-pg2" className="bg-blue-600 container-pg2 w-full h-[90vh]">
 
           {/* Commit Details */}
           <div className="container-commit-details">Viewing [ page.jsx ] of branch:{branch} | Commit:{commitSha}
@@ -76,7 +79,7 @@ export default function Home() {
             }}>Reset Server</button>}
           </div>
 
-          {/* EDITOR */}
+          {/* editor */}
           <div className="editor-wrapper">
             <Editor
               height="100%"
@@ -87,7 +90,7 @@ export default function Home() {
             />
           </div>
 
-          {/* DETAILS */}
+          {/* details */}
           <div className="push-details-container">
             {/* lbl username */}
             <div>Username</div>
@@ -111,7 +114,7 @@ export default function Home() {
             <input type="text" value={commitTag} onChange={(v) => setCommitTag(v.target.value)} />
           </div>
 
-          {/* PUSH COMMIT TO REPO BTN */}
+          {/* push code btn */}
           <button className="btn-pushcode" onClick={() => {
             // Validating Input
             var { isValidated, sanitizedUsername } = validateInput();
@@ -133,12 +136,12 @@ export default function Home() {
 
         </div>
 
-        {/* message windows */}
-        <div className="w-fit h-full bg-[#002a2a2a] fixed right-0 top-0 z-20
+        {/* NORTIFICATION SIDEBAR */}
+        <div className="w-fit h-full bg-transparent fixed right-0 top-0 z-20
         flex flex-row
         ">
           {/* expand button */}
-          <button className="bg-amber-400 w-fit h-fit p-3 sticky right-0 bottom-0" onClick={() => {
+          <button className="bg-amber-400 w-fit h-fit p-3 sticky right-0 top-0" onClick={() => {
             console.log("close click")
             setNortificationAreaVisible(!nortificationAreaVisible);
           }}>close
