@@ -6,15 +6,19 @@ import { fetchCodeFromGitHub, getUser, isUserSaved, pushCode, removeUser, resetS
 
 export default function Home() {
   const isFirstRun = useRef(true);
-  const [code, setCode] = useState("// LOADING PAGE ....");
+  const codePages = useRef(["page.jsx", "global.css"]);
+  const code = useRef("// LOADING PAGE ....");
+
   const [username, setUsername] = useState("");
   const [commitTag, setCommitTag] = useState("");
   const [userID, setUserID] = useState(0);
   const [branch, setBranch] = useState('');
   const [commitSha, setCommitSha] = useState('');
-  const [isUserPersisted, setIsUserPersisted] = useState(false);
+  const [isUserPersisted, setIsUserPersisted] = useState(true);
+  const [isPushDetailsValidated, setIsPushDetailsValidated] = useState(false);
   const [nortificationAreaVisible, setNortificationAreaVisible] = useState(false);
   const [nortificationArr, setNortificationArr] = useState([]);
+  const [isNortificationsEnabled, setIsNortificationsEnabled] = useState(false);
 
 
   // init setup run 
@@ -29,11 +33,15 @@ export default function Home() {
   //   _nortificationUpdate();
   // }, [nortificationArr]);
 
+  useEffect(() => {
+    validateInput && setIsPushDetailsValidated(true);
+  }, [userID, commitTag]);
+
   return (
     <div className="container-top w-full h-screen overflow-y-scroll">
 
       {/* HEADER */}
-      <header className="container-header w-full h-[10vh] sticky top-0 left-0">
+      <header className="container-header w-full max-w-7xl h-[10vh] sticky top-0 left-0">
         {/* Logo Art */}
         <img src="./logo_art.svg" className="h-10 bg-accent" />
         {/* TITLE */}
@@ -58,7 +66,7 @@ export default function Home() {
             </p>
           </div>
           <div className="h-fit flex-1"></div>
-          <button className="w-fit h-fit p-4 accent-btn" onClick={() => {
+          <button className="w-fit h-fit p-4 btn accent-btn" onClick={() => {
             document.getElementById('c-pg2').scrollIntoView({
               behavior: 'smooth',
               block: 'start'
@@ -69,77 +77,95 @@ export default function Home() {
         </div>
 
         {/* CONTAINER PG 2*/}
-        <div id="c-pg2" className="bg-blue-600 container-pg2 w-full h-[90vh]">
+        <div id="c-pg2" className="container-pg2 w-full h-[90vh]">
 
           {/* Commit Details */}
-          <div className="container-commit-details">Viewing [ page.jsx ] of branch:{branch} | Commit:{commitSha}
-            {isUserPersisted && <button className="btn-reset-server" onClick={() => {
-              // reset server container
-              resetServerContainer()
-            }}>Reset Server</button>}
+          <div className="commit-details w-full h-fit overflow-x-hidden">
+            <div className="flex flex-row">
+              <p className="w-[10ch]">Viewing</p>:
+              <select className="border border-white text-accent p-2 ms-2">
+                {codePages.current.map(page => (<option value={page} key={codePages.current.indexOf(page)}>{page}</option>))}
+              </select>
+            </div>
+            <div className="flex flex-row"><p className="w-[10ch]">Branch</p>:&nbsp;{branch} </div>
+            <div className="flex flex-row w-full h-fit">
+              <p className="w-[10ch] shrink-0">Commit</p>
+              <p>:&nbsp;{commitSha}</p>
+            </div>
           </div>
+          <div className="flex flex-col md:flex-row">
+            {/* editor */}
+            <div className="editor-wrapper">
+              <Editor
+                height="100%"
+                defaultLanguage="javascript"
+                value={code.current}
+                theme="vs-dark"
+                onChange={(value) => code.current = value || ""}
+              />
+            </div>
 
-          {/* editor */}
-          <div className="editor-wrapper">
-            <Editor
-              height="100%"
-              defaultLanguage="javascript"
-              value={code}
-              theme="vs-dark"
-              onChange={(value) => setCode(value || "")}
-            />
+            <div>
+              {/* details */}
+              <div className="flex flex-col gap-y-4 p-3">
+                <div className="flex flex-row justify-start gap-x-2">
+                  {/* lbl username */}
+                  <div className="w-[12ch]">Username</div>
+                  {/* username input */}
+                  <input className='inpt w-[15ch]' type="text" value={username} onChange={(v) => {
+                    setUsername(v.target.value)
+                    setUserID(Math.floor(Math.random() * 99999));
+                  }} />
+                  {/* user id auto generate field */}
+                  {username && <input className="inpt w-[6ch]" value={userID} readOnly={true} />}
+                </div>
+                <div className="flex flex-row justify-start gap-x-2">
+                  {/* lbl Commit tag */}
+                  <div className="w-[12ch]">Commit Tag</div>
+                  {/* commit tag input */}
+                  <input className='inpt w-[15ch]' type="text" value={commitTag} onChange={(v) => setCommitTag(v.target.value)} />
+                </div>
+              </div>
+
+              {/* btn & links */}
+              <div>
+                {/* push code btn */}
+                <button className={`btn accent-sq-btn`} onClick={() => {
+                  // Validating Input
+                  var { isValidated, sanitizedUsername } = validateInput();
+                  if (isValidated) {
+                    // push updated code to API
+                    pushCode(sanitizedUsername, userID, code, commitTag)
+                  } else {
+                    console.log("Input Not Validated")
+                  }
+                  setIsUserPersisted(true);
+                }}>Push Code</button>
+                {/* delete user button */}
+                {isUserPersisted && <button onClick={() => {
+                  removeUser();
+                  setUsername(""); setCommitTag(""); setUserID(0);
+                  setIsUserPersisted(false);
+                }}>Remove User</button>}
+
+                {/* GitHub Activity Link */}
+                {isUserPersisted && <a href={`https://github.com/dhakiweere/reflex-ci-cd/activity?ref=user-branch/${username}-${userID}`}
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  GitHub Branch Activity
+                </a>}
+              </div>
+
+            </div>
+
           </div>
-
-          {/* details */}
-          <div className="push-details-container">
-            {/* lbl username */}
-            <div>Username</div>
-            {/* username input */}
-            <input type="text" value={username} onChange={(v) => {
-              setUsername(v.target.value)
-              setUserID(Math.floor(Math.random() * 99999));
-            }} />
-            {/* user id auto generate field */}
-            {username && <input value={userID} readOnly={true} />}
-            {/* delete user button */}
-            {isUserPersisted && <button onClick={() => {
-              removeUser();
-              setUsername(""); setCommitTag(""); setUserID(0);
-              setIsUserPersisted(false);
-            }}>Remove User</button>}
-
-            {/* lbl Commit tag */}
-            <div>Commit Tag</div>
-            {/* commit tag input */}
-            <input type="text" value={commitTag} onChange={(v) => setCommitTag(v.target.value)} />
-          </div>
-
-          {/* push code btn */}
-          <button className="btn-pushcode" onClick={() => {
-            // Validating Input
-            var { isValidated, sanitizedUsername } = validateInput();
-            if (isValidated) {
-              // push updated code to API
-              pushCode(sanitizedUsername, userID, code, commitTag)
-            } else {
-              console.log("Input Not Validated")
-            }
-            setIsUserPersisted(true);
-          }}>Push Code</button>
-
-          {/* GitHub Activity Link */}
-          {isUserPersisted && <a href={`https://github.com/dhakiweere/reflex-ci-cd/activity?ref=user-branch/${username}-${userID}`}
-            target="_blank"
-            rel="noopener noreferrer">
-            GitHub Branch Activity
-          </a>}
 
         </div>
 
         {/* NORTIFICATION SIDEBAR */}
-        <div className="w-fit h-full bg-transparent fixed right-0 top-0 z-20
-        flex flex-row
-        ">
+        <div className={` ${isNortificationsEnabled ? 'flex' : 'hidden'} w-fit h-full bg-transparent fixed right-0 top-0 z-20
+         flex-row
+        `}>
           {/* expand button */}
           <button className="bg-amber-400 w-fit h-fit p-3 sticky right-0 top-0" onClick={() => {
             console.log("close click")
@@ -169,8 +195,7 @@ export default function Home() {
   function _setup() {
     // load code content from github
     (async () => {
-      const data = await fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortification);
-      setCode(data);
+      await fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortification, code);
     })();
 
     // load user from cookies if exist

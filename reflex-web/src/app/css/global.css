@@ -41,19 +41,53 @@
   }
 
   .subtitle {
-    @apply  text-white text-5xl font-bold
+    @apply text-white text-5xl font-bold
   }
 
   .accent-btn {
-    @apply cursor-pointer duration-150 bg-accent text-white rounded-4xl font-momo border-2 border-transparent
+    @apply bg-accent text-white rounded-4xl font-momo border-2 border-transparent
   }
 
   .accent-btn:hover {
-    @apply scale-110 bg-amber-50 text-accent border-accent
+    @apply bg-amber-50 text-accent border-accent
   }
 
-  .accent-btn:active {
+  .btn {
+    @apply cursor-pointer duration-150
+  }
+
+  .btn:hover {
+    @apply scale-110
+  }
+
+  .btn:active {
     @apply scale-105
+  }
+
+
+
+  .commit-details {
+    @apply text-xl p-3 font-semibold flex flex-col gap-y-3
+  }
+
+  .inpt {
+    @apply border-b border-white text-accent font-momo ps-2
+  }
+
+  .inpt:focus {
+    @apply border-b-accent outline-0
+  }
+
+  .btn-disabled {
+    @apply bg-gray-500 cursor-not-allowed
+  }
+
+  .accent-sq-btn {
+    @apply w-fit h-fit bg-accent text-white rounded-sm border border-transparent p-1
+  }
+
+  .accent-sq-btn:hover {
+    @apply bg-white border-accent text-accent
   }
 
 

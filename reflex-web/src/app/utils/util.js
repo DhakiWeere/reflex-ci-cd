@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 
 // fetch code from github from [api/get-code]
-export async function fetchCodeFromGitHub(setBranch, setCommitSha, addNortification) {
+export async function fetchCodeFromGitHub(setBranch, setCommitSha, addNortification, code, codePages) {
     try {
         const response = await fetch('/api/get-code');
         // response success ?
@@ -18,8 +18,9 @@ export async function fetchCodeFromGitHub(setBranch, setCommitSha, addNortificat
 
         // add nortification
         addNortification("Code Fetch from Github Successfull")
-        // return the code
-        return jsonData.jsxContent;
+        // set code to ref variabe
+        code.current = jsonData.codeContent;
+
     } catch (error) {
         console.error('Error fetching code:', error);
         throw error;

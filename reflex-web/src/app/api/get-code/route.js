@@ -19,14 +19,14 @@ export async function GET(request) {
     });
 
     // Decode the base64 content
-    const jsxContent = Buffer.from(data.content, 'base64').toString('utf-8');
+    const codeContent = Buffer.from(data.content, 'base64').toString('utf-8');
 
     // Return the HTML content in JSON response
     return NextResponse.json({
       success: true,
       fileName: data.name,
       path: data.path,
-      jsxContent: jsxContent,
+      codeContent: codeContent,
       branch: process.env.GIT_BRANCH,
       commitSha: process.env.GIT_COMMIT,
       sha: data.sha, 
