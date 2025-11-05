@@ -30,12 +30,26 @@ export default function Home() {
   //     isFirstRun.current = false;
   //     return;
   //   }
+  // CHANGE ADDAPTED TO LATER USEEFFECT HOOK
   //   _nortificationUpdate();
   // }, [nortificationArr]);
 
   useEffect(() => {
-    validateInput && setIsPushDetailsValidated(true);
-  }, [userID, commitTag]);
+    console.log(`effect run ${isFirstRun.current}`);
+    if (!isFirstRun.current) {
+      let { isValidated } = validateInput();
+      console.log(`isValidated : ${isValidated}`);
+      if (isValidated) {
+        setIsPushDetailsValidated(true);
+      } else {
+        setIsPushDetailsValidated(false);
+      }
+    }
+  }, [username, commitTag]);
+
+  useEffect(() => {
+    if (isFirstRun.current) isFirstRun.current = false;
+  }, []);
 
   return (
     <div className="container-top w-full h-screen overflow-y-scroll">
@@ -130,7 +144,7 @@ export default function Home() {
               {/* btn & links */}
               <div>
                 {/* push code btn */}
-                <button className={`btn accent-sq-btn`} onClick={() => {
+                <button className={`btn ${isPushDetailsValidated ? 'accent-sq-btn' : 'btn-disabled'}`} onClick={() => {
                   // Validating Input
                   var { isValidated, sanitizedUsername } = validateInput();
                   if (isValidated) {
@@ -178,7 +192,6 @@ export default function Home() {
             <ul className={`${nortificationAreaVisible ? "max-w-96" : "max-w-0"}
             h-full bg-blue-300 flex flex-col justify-end duration-300 overflow-hidden
             `}>
-              {console.log(nortificationArr)}
               {nortificationArr.map(obj => (<li className="w-[35ch]" key={nortificationArr.indexOf(nortificationArr.indexOf((obj)))}>{obj.nTime + " " + obj.nMsg}</li>))}
             </ul>
           </div>

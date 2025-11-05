@@ -79,7 +79,7 @@
   }
 
   .btn-disabled {
-    @apply bg-gray-500 cursor-not-allowed
+    @apply bg-gray-500 p-1 rounded-sm cursor-not-allowed
   }
 
   .accent-sq-btn {
