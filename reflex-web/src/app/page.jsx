@@ -35,10 +35,8 @@ export default function Home() {
   // }, [nortificationArr]);
 
   useEffect(() => {
-    console.log(`effect run ${isFirstRun.current}`);
     if (!isFirstRun.current) {
       let { isValidated } = validateInput();
-      console.log(`isValidated : ${isValidated}`);
       if (isValidated) {
         setIsPushDetailsValidated(true);
       } else {
@@ -142,7 +140,7 @@ export default function Home() {
               </div>
 
               {/* btn & links */}
-              <div>
+              <div className="flex flex-row gap-x-2">
                 {/* push code btn */}
                 <button className={`btn ${isPushDetailsValidated ? 'accent-sq-btn' : 'btn-disabled'}`} onClick={() => {
                   // Validating Input
@@ -155,18 +153,19 @@ export default function Home() {
                   }
                   setIsUserPersisted(true);
                 }}>Push Code</button>
+
                 {/* delete user button */}
-                {isUserPersisted && <button onClick={() => {
+                {isUserPersisted && <button className={`btn accent2-sq-btn`}  onClick={() => {
                   removeUser();
                   setUsername(""); setCommitTag(""); setUserID(0);
                   setIsUserPersisted(false);
                 }}>Remove User</button>}
 
                 {/* GitHub Activity Link */}
-                {isUserPersisted && <a href={`https://github.com/dhakiweere/reflex-ci-cd/activity?ref=user-branch/${username}-${userID}`}
+                {isUserPersisted && <a className="btn accent3-sq-btn" href={`https://github.com/dhakiweere/reflex-ci-cd/activity?ref=user-branch/${username}-${userID}`}
                   target="_blank"
                   rel="noopener noreferrer">
-                  GitHub Branch Activity
+                  GitHub Branch
                 </a>}
               </div>
 

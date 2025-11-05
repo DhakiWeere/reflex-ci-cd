@@ -90,6 +90,22 @@
     @apply bg-white border-accent text-accent
   }
 
+  .accent2-sq-btn {
+    @apply w-fit h-fit bg-yellow-500 text-white rounded-sm border border-transparent p-1
+  }
+
+  .accent2-sq-btn:hover {
+    @apply bg-white border-yellow-500 text-yellow-500
+  }
+
+  .accent3-sq-btn {
+    @apply w-fit h-fit bg-green-500 text-white rounded-sm border border-transparent p-1
+  }
+
+  .accent3-sq-btn:hover {
+    @apply bg-white border-green-500 text-green-500
+  }
+
 
   /* Editor container */
   .editor-wrapper {
