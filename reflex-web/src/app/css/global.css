@@ -33,15 +33,15 @@
   }
 
   .container-pg1 {
-    @apply flex flex-col gap-y-4 justify-start items-start p-3
+    @apply flex flex-col md:flex-row gap-y-6 justify-start md:justify-center items-start p-3
   }
 
   .title {
-    @apply text-accent font-momo font-bold text-3xl
+    @apply text-accent font-momo font-bold text-3xl md:text-4xl
   }
 
   .subtitle {
-    @apply text-white text-5xl font-bold
+    @apply text-white text-5xl md:text-7xl font-bold
   }
 
   .accent-btn {
@@ -53,7 +53,7 @@
   }
 
   .btn {
-    @apply cursor-pointer duration-150
+    @apply cursor-pointer duration-150 text-center
   }
 
   .btn:hover {
@@ -79,7 +79,7 @@
   }
 
   .btn-disabled {
-    @apply bg-gray-500 p-1 rounded-sm cursor-not-allowed
+    @apply bg-gray-500 p-1 md:px-4 rounded-sm cursor-not-allowed w-fit
   }
 
   .accent-sq-btn {
@@ -124,5 +124,11 @@
     color: white;
     padding: 0.5rem;
     border-radius: 7px
+  }
+}
+
+@layer utilities {
+  .text-shadow-accent {
+    text-shadow: 2px 2px 10px var(--color-accent);
   }
 }

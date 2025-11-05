@@ -6,7 +6,7 @@ import { fetchCodeFromGitHub, getUser, isUserSaved, pushCode, removeUser, resetS
 
 export default function Home() {
   const isFirstRun = useRef(true);
-  const codePages = useRef(["page.jsx", "global.css"]);
+  const codePages = useRef(["page.jsx"]);
   const code = useRef("// LOADING PAGE ....");
 
   const [username, setUsername] = useState("");
@@ -14,7 +14,7 @@ export default function Home() {
   const [userID, setUserID] = useState(0);
   const [branch, setBranch] = useState('');
   const [commitSha, setCommitSha] = useState('');
-  const [isUserPersisted, setIsUserPersisted] = useState(true);
+  const [isUserPersisted, setIsUserPersisted] = useState(false);
   const [isPushDetailsValidated, setIsPushDetailsValidated] = useState(false);
   const [nortificationAreaVisible, setNortificationAreaVisible] = useState(false);
   const [nortificationArr, setNortificationArr] = useState([]);
@@ -65,11 +65,11 @@ export default function Home() {
 
         {/* CONTAINER PG 1 */}
         <div className="container-pg1 w-full h-[90vh]">
-          <div className="flex flex-col gap-y-3 w-full h-fit">
+          <div className="h-full w-full flex flex-col gap-y-3 md:justify-center">
             {/* subtitle*/}
             <h2 className="subtitle w-full text-start">Self<br /> Reflecting<br /> System<br /> Pipeline</h2>
             {/* desc */}
-            <p className="h-full w-[40ch] text-md font-semibold flex flex-col text-start">
+            <p className="h-fit w-[40ch] text-md md:text-xl font-semibold flex flex-col text-start">
               This project is a concept demonstration of a full-duplex CI/CD pipeline, exploring how deployment
               pipelines can evolve beyond the traditional one-way flow. In a typical setup, changes move from
               the GitHub repository to the running application. Here, the process is bidirectional — the web
@@ -77,14 +77,19 @@ export default function Home() {
               turn triggers GitHub Actions workflows, creating a self-sustaining feedback loop.
             </p>
           </div>
-          <div className="h-fit flex-1"></div>
-          <button className="w-fit h-fit p-4 btn accent-btn" onClick={() => {
-            document.getElementById('c-pg2').scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }}>Start Editing</button>
-          <div className="flex-1"></div>
+          <div className="h-full w-full flex flex-col gap-y-4 md:justify-center md:items-center">
+            <p className="hidden md:block text-xl font-bold font-mono text-shadow-accent">
+              Start making changes to this very page
+            </p>
+            <button className="w-fit h-fit p-4 btn accent-btn" onClick={() => {
+              document.getElementById('c-pg2').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }}>
+              Start Editing
+            </button>
+          </div>
 
         </div>
 
@@ -105,7 +110,8 @@ export default function Home() {
               <p>:&nbsp;{commitSha}</p>
             </div>
           </div>
-          <div className="flex flex-col md:flex-row">
+
+          <div className="flex flex-col md:flex-row md:gap-x-4">
             {/* editor */}
             <div className="editor-wrapper">
               <Editor
@@ -122,7 +128,7 @@ export default function Home() {
               <div className="flex flex-col gap-y-4 p-3">
                 <div className="flex flex-row justify-start gap-x-2">
                   {/* lbl username */}
-                  <div className="w-[12ch]">Username</div>
+                  <div className="w-[12ch] font-bold">Username</div>
                   {/* username input */}
                   <input className='inpt w-[15ch]' type="text" value={username} onChange={(v) => {
                     setUsername(v.target.value)
@@ -133,16 +139,16 @@ export default function Home() {
                 </div>
                 <div className="flex flex-row justify-start gap-x-2">
                   {/* lbl Commit tag */}
-                  <div className="w-[12ch]">Commit Tag</div>
+                  <div className="w-[12ch] font-bold">Commit Tag</div>
                   {/* commit tag input */}
                   <input className='inpt w-[15ch]' type="text" value={commitTag} onChange={(v) => setCommitTag(v.target.value)} />
                 </div>
               </div>
 
               {/* btn & links */}
-              <div className="flex flex-row gap-x-2">
+              <div className="flex flex-row md:flex-col md:gap-y-3 md:items-center gap-x-2">
                 {/* push code btn */}
-                <button className={`btn ${isPushDetailsValidated ? 'accent-sq-btn' : 'btn-disabled'}`} onClick={() => {
+                <button className={`btn ${isPushDetailsValidated ? 'accent-sq-btn btn' : 'btn-disabled'}`} onClick={() => {
                   // Validating Input
                   var { isValidated, sanitizedUsername } = validateInput();
                   if (isValidated) {
@@ -155,7 +161,7 @@ export default function Home() {
                 }}>Push Code</button>
 
                 {/* delete user button */}
-                {isUserPersisted && <button className={`btn accent2-sq-btn`}  onClick={() => {
+                {isUserPersisted && <button className={`btn accent2-sq-btn`} onClick={() => {
                   removeUser();
                   setUsername(""); setCommitTag(""); setUserID(0);
                   setIsUserPersisted(false);
