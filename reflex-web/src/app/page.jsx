@@ -140,7 +140,7 @@ export default function Home() {
                   var { isValidated, sanitizedUsername } = validateInput();
                   if (isValidated) {
                     // push updated code to API
-                    pushCode(sanitizedUsername, userID, code, commitTag)
+                    pushCode(sanitizedUsername, userID, code.current, commitTag)
                   } else {
                     console.log("Input Not Validated")
                   }

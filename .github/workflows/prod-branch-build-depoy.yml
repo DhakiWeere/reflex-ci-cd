@@ -4,6 +4,8 @@ on:
   push:
     branches-ignore:
       - 'user-branch/*' # ignore if its a user-branch
+      - 'dev'
+      - 'rescue'
 
   workflow_dispatch:
 
