@@ -55,7 +55,7 @@ export default function Home() {
       {/* HEADER */}
       <header className="container-header w-full max-w-7xl h-[10vh] sticky top-0 left-0">
         {/* Logo Art */}
-        <img src="./logo_art.svg" className="h-10 bg-accent" />
+        <img src="./logo.png" className="h-10" />
         {/* TITLE */}
         <h1 className="title">Reflex CI / CD</h1>
       </header>
