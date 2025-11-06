@@ -16,10 +16,23 @@ export default function Home() {
   const [commitSha, setCommitSha] = useState('');
   const [isUserPersisted, setIsUserPersisted] = useState(false);
   const [isPushDetailsValidated, setIsPushDetailsValidated] = useState(false);
+  const [nortificationAreaVisible, setNortificationAreaVisible] = useState(false);
+  const [nortificationArr, setNortificationArr] = useState([]);
+  const [isNortificationsEnabled, setIsNortificationsEnabled] = useState(false);
 
 
   // init setup run 
   useEffect(_setup, []);
+
+  // nortification update
+  // useEffect(() => {
+  //   if (isFirstRun.current) {
+  //     isFirstRun.current = false;
+  //     return;
+  //   }
+  // CHANGE ADDAPTED TO LATER USEEFFECT HOOK
+  //   _nortificationUpdate();
+  // }, [nortificationArr]);
 
   useEffect(() => {
     if (!isFirstRun.current) {
@@ -168,6 +181,30 @@ export default function Home() {
 
         </div>
 
+        {/* NORTIFICATION SIDEBAR */}
+        <div className={` ${isNortificationsEnabled ? 'flex' : 'hidden'} w-fit h-full bg-transparent fixed right-0 top-0 z-20
+         flex-row
+        `}>
+          {/* expand button */}
+          <button className="bg-amber-400 w-fit h-fit p-3 sticky right-0 top-0" onClick={() => {
+            console.log("close click")
+            setNortificationAreaVisible(!nortificationAreaVisible);
+          }}>close
+          </button>
+
+          {/* nortification area */}
+          <div>
+            <ul className={`${nortificationAreaVisible ? "max-w-96" : "max-w-0"}
+            h-full bg-blue-300 flex flex-col justify-end duration-300 overflow-hidden
+            `}>
+              {nortificationArr.map(obj => (<li className="w-[35ch]" key={nortificationArr.indexOf(nortificationArr.indexOf((obj)))}>{obj.nTime + " " + obj.nMsg}</li>))}
+            </ul>
+          </div>
+
+        </div>
+
+
+
       </main>
     </div>
   );
@@ -176,7 +213,7 @@ export default function Home() {
   function _setup() {
     // load code content from github
     (async () => {
-      await fetchCodeFromGitHub(setBranch, setCommitSha, code);
+      await fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortification, code);
     })();
 
     // load user from cookies if exist
@@ -186,6 +223,23 @@ export default function Home() {
       setUserID(userObj.id);
       setIsUserPersisted(true);
     }
+  }
+
+  // nortification update function declaration
+  function _nortificationUpdate() {
+    if (!nortificationAreaVisible) {
+      setNortificationAreaVisible(true);
+      setTimeout(() => setNortificationAreaVisible(false), 2000);
+    }
+  }
+
+  // add new nortification
+  function addNewNortification(msg) {
+    let date = new Date();
+    setNortificationArr([...nortificationArr, {
+      nTime: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+      nMsg: msg
+    }]);
   }
 
   // hoisted inpt validation func declaration
