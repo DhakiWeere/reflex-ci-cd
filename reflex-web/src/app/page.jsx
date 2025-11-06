@@ -141,10 +141,10 @@ export default function Home() {
                   if (isValidated) {
                     // push updated code to API
                     pushCode(sanitizedUsername, userID, code.current, commitTag)
+                    setIsUserPersisted(true);
                   } else {
                     console.log("Input Not Validated")
                   }
-                  setIsUserPersisted(true);
                 }}>Push Code</button>
 
                 {/* delete user button */}
