@@ -18,37 +18,24 @@ export default function Home() {
   const [isPushDetailsValidated, setIsPushDetailsValidated] = useState(false);
   const [nortificationAreaVisible, setNortificationAreaVisible] = useState(false);
   const [nortificationArr, setNortificationArr] = useState([]);
-  const [isNortificationsEnabled, setIsNortificationsEnabled] = useState(false);
+  const [isNortificationsEnabled, setIsNortificationsEnabled] = useState(true);
 
 
   // init setup run 
   useEffect(_setup, []);
 
   // nortification update
-  // useEffect(() => {
-  //   if (isFirstRun.current) {
-  //     isFirstRun.current = false;
-  //     return;
-  //   }
-  // CHANGE ADDAPTED TO LATER USEEFFECT HOOK
-  //   _nortificationUpdate();
-  // }, [nortificationArr]);
+  useEffect(_nortificationUpdate, [nortificationArr]);
 
-  useEffect(() => {
-    if (!isFirstRun.current) {
-      let { isValidated } = validateInput();
-      if (isValidated) {
-        setIsPushDetailsValidated(true);
-      } else {
-        setIsPushDetailsValidated(false);
-      }
-    }
-  }, [username, commitTag]);
+  // user data input update
+  useEffect(_userValidatedUpdate, [username, commitTag]);
 
+  // end first render
   useEffect(() => {
     if (isFirstRun.current) isFirstRun.current = false;
   }, []);
 
+  // JSX MARKUP
   return (
     <div className="container-top w-full h-screen overflow-y-scroll">
 
@@ -64,7 +51,7 @@ export default function Home() {
       <main className="container-actual max-w-7xl w-full">
 
         {/* CONTAINER PG 1 */}
-        <div className="container-pg1 w-full h-[90vh]">
+        <section className="container-pg1 w-full h-[90vh]">
           <div className="h-full w-full flex flex-col gap-y-3 md:justify-center">
             {/* subtitle*/}
             <h2 className="subtitle w-full text-start">Self<br /> Reflecting<br /> System<br /> Pipeline</h2>
@@ -91,10 +78,10 @@ export default function Home() {
             </button>
           </div>
 
-        </div>
+        </section>
 
         {/* CONTAINER PG 2*/}
-        <div id="c-pg2" className="container-pg2 w-full h-[90vh]">
+        <section id="c-pg2" className="container-pg2 w-full h-[90vh]">
 
           {/* Commit Details */}
           <div className="commit-details w-full h-fit overflow-x-hidden">
@@ -179,7 +166,7 @@ export default function Home() {
 
           </div>
 
-        </div>
+        </section>
 
         {/* NORTIFICATION SIDEBAR */}
         <div className={` ${isNortificationsEnabled ? 'flex' : 'hidden'} w-fit h-full bg-transparent fixed right-0 top-0 z-20
@@ -230,6 +217,18 @@ export default function Home() {
     if (!nortificationAreaVisible) {
       setNortificationAreaVisible(true);
       setTimeout(() => setNortificationAreaVisible(false), 2000);
+    }
+  }
+
+  // user validationn update function
+  function _userValidatedUpdate() {
+    if (!isFirstRun.current) {
+      let { isValidated } = validateInput();
+      if (isValidated) {
+        setIsPushDetailsValidated(true);
+      } else {
+        setIsPushDetailsValidated(false);
+      }
     }
   }
 
