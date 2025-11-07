@@ -174,16 +174,16 @@ export default function Home() {
         `}>
           {/* expand button */}
           <button className="bg-amber-400 w-fit h-fit p-3 sticky right-0 top-0" onClick={() => {
-            console.log("close click")
+            console.log(`close click : ${nortificationAreaVisible}`)
             setNortificationAreaVisible(!nortificationAreaVisible);
           }}>close
           </button>
 
           {/* nortification area */}
           <div>
-            <ul className={`${nortificationAreaVisible ? "max-w-96" : "max-w-0"}
-            h-full bg-blue-300 flex flex-col justify-end duration-300 overflow-hidden
-            `}>
+            <ul className={`${nortificationAreaVisible ? "w-96" : "w-0"}
+            h-full bg-blue-300 flex flex-col justify-end duration-300 
+                        `}>
               {nortificationArr.map(obj => (<li className="w-[35ch]" key={nortificationArr.indexOf(nortificationArr.indexOf((obj)))}>{obj.nTime + " " + obj.nMsg}</li>))}
             </ul>
           </div>
