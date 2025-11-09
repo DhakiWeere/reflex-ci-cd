@@ -8,6 +8,7 @@ export default function Home() {
   const isFirstRun = useRef(true);
   const codePages = useRef(["page.jsx"]);
   const code = useRef("// LOADING PAGE ....");
+  const editorSectionRef = useRef(null);
 
   const [username, setUsername] = useState("");
   const [commitTag, setCommitTag] = useState("");
@@ -18,7 +19,8 @@ export default function Home() {
   const [isPushDetailsValidated, setIsPushDetailsValidated] = useState(false);
   const [nortificationAreaVisible, setNortificationAreaVisible] = useState(false);
   const [nortificationArr, setNortificationArr] = useState([]);
-  const [isNortificationsEnabled, setIsNortificationsEnabled] = useState(true);
+  const [isNortificationsEnabled, setIsNortificationsEnabled] = useState(false);
+  const [isEditorVisible, setIsEditorVisible] = useState(false);
 
 
   // init setup run 
@@ -69,6 +71,7 @@ export default function Home() {
               Start making changes to this very page
             </p>
             <button className="w-fit h-fit p-4 btn accent-btn" onClick={() => {
+              // scroll to editor
               document.getElementById('c-pg2').scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
@@ -81,7 +84,7 @@ export default function Home() {
         </section>
 
         {/* CONTAINER PG 2*/}
-        <section id="c-pg2" className="container-pg2 w-full h-[90vh]">
+        <section ref={editorSectionRef} id="c-pg2" className="container-pg2 w-full h-[90vh]">
 
           {/* Commit Details */}
           <div className="commit-details w-full h-fit overflow-x-hidden">
@@ -161,15 +164,12 @@ export default function Home() {
                   GitHub Branch
                 </a>}
               </div>
-
             </div>
-
           </div>
-
         </section>
 
         {/* NORTIFICATION SIDEBAR */}
-        <div className={` ${isNortificationsEnabled ? 'flex' : 'hidden'} w-fit h-full bg-transparent fixed right-0 top-0 z-20
+        <section className={` ${isNortificationsEnabled ? 'flex' : 'hidden'} w-fit h-full bg-transparent fixed right-0 top-0 z-20
          flex-row
         `}>
           {/* expand button */}
@@ -187,10 +187,7 @@ export default function Home() {
               {nortificationArr.map(obj => (<li className="w-[35ch]" key={nortificationArr.indexOf(nortificationArr.indexOf((obj)))}>{obj.nTime + " " + obj.nMsg}</li>))}
             </ul>
           </div>
-
-        </div>
-
-
+        </section>
 
       </main>
     </div>
@@ -198,6 +195,31 @@ export default function Home() {
 
   // hoisted setup function declaration
   function _setup() {
+    // editor section elem
+    const editorSectionElement = editorSectionRef.current;
+    // editor observer
+    const observer = new IntersectionObserver((entires) => {
+      entires.forEach(entry => {
+        if (entry.isIntersecting) {
+          editorSectionObservedCallback(entry);
+          // stop observer
+          observer.unobserve(editorSectionElement);
+          observer.disconnect();
+        }
+      },
+        {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.5
+        }
+      )
+    });
+
+    // start observer
+    if(editorSectionElement){
+      observer.observe(editorSectionElement);
+    }
+
     // load code content from github
     (async () => {
       await fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortification, code);
@@ -214,7 +236,7 @@ export default function Home() {
 
   // nortification update function declaration
   function _nortificationUpdate() {
-    if (!nortificationAreaVisible) {
+    if (!nortificationAreaVisible && !isFirstRun) {
       setNortificationAreaVisible(true);
       setTimeout(() => setNortificationAreaVisible(false), 2000);
     }
@@ -230,6 +252,14 @@ export default function Home() {
         setIsPushDetailsValidated(false);
       }
     }
+  }
+
+  // test intersction observer func
+  function editorSectionObservedCallback(entry){
+    console.log("Intersection reaced");
+    console.log(`Intersection ratio : ${entry.intersectionRatio}`)
+    setIsEditorVisible(true);
+    setIsNortificationsEnabled(true);
   }
 
   // add new nortification
