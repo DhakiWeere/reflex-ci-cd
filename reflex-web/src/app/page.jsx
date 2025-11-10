@@ -4,11 +4,13 @@ import { useState, useEffect, createContext, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { fetchCodeFromGitHub, getUser, isUserSaved, pushCode, removeUser, resetServerContainer } from "./utils/util";
 
+import { textContent } from "./data/textContent";
+
 export default function Home() {
   const isFirstRun = useRef(true);
   const codePages = useRef(["page.jsx"]);
-  const code = useRef("// LOADING PAGE ....");
-  const editorSectionRef = useRef(null);
+  const code = useRef(textContent.editor.editorInitialText);
+  const editorRef = useRef(null);
 
   const [username, setUsername] = useState("");
   const [commitTag, setCommitTag] = useState("");
@@ -20,7 +22,6 @@ export default function Home() {
   const [nortificationAreaVisible, setNortificationAreaVisible] = useState(false);
   const [nortificationArr, setNortificationArr] = useState([]);
   const [isNortificationsEnabled, setIsNortificationsEnabled] = useState(false);
-  const [isEditorVisible, setIsEditorVisible] = useState(false);
 
 
   // init setup run 
@@ -84,7 +85,7 @@ export default function Home() {
         </section>
 
         {/* CONTAINER PG 2*/}
-        <section ref={editorSectionRef} id="c-pg2" className="container-pg2 w-full h-[90vh]">
+        <section id="c-pg2" className="container-pg2 w-full h-[90vh]">
 
           {/* Commit Details */}
           <div className="commit-details w-full h-fit overflow-x-hidden">
@@ -103,7 +104,7 @@ export default function Home() {
 
           <div className="flex flex-col md:flex-row md:gap-x-4">
             {/* editor */}
-            <div className="editor-wrapper">
+            <div ref={editorRef} className="editor-wrapper">
               <Editor
                 height="100%"
                 defaultLanguage="javascript"
@@ -182,9 +183,14 @@ export default function Home() {
           {/* nortification area */}
           <div>
             <ul className={`${nortificationAreaVisible ? "w-96" : "w-0"}
-            h-full bg-blue-300 flex flex-col justify-end duration-300 
-                        `}>
-              {nortificationArr.map(obj => (<li className="w-[35ch]" key={nortificationArr.indexOf(nortificationArr.indexOf((obj)))}>{obj.nTime + " " + obj.nMsg}</li>))}
+               h-full bg-blue-300 flex flex-col justify-end duration-300 `}>
+              {nortificationArr.map(obj => (
+                <li className="w-[35ch]"
+                  key={nortificationArr.indexOf(nortificationArr.indexOf((obj)))}
+                >
+                  {obj.nTime + " " + obj.nMsg}
+                </li>)
+              )}
             </ul>
           </div>
         </section>
@@ -196,34 +202,29 @@ export default function Home() {
   // hoisted setup function declaration
   function _setup() {
     // editor section elem
-    const editorSectionElement = editorSectionRef.current;
+    const editorElement = editorRef.current;
     // editor observer
     const observer = new IntersectionObserver((entires) => {
       entires.forEach(entry => {
         if (entry.isIntersecting) {
-          editorSectionObservedCallback(entry);
+          editorObservedCallback(entry);
           // stop observer
-          observer.unobserve(editorSectionElement);
+          observer.unobserve(editorElement);
           observer.disconnect();
         }
-      },
-        {
-          root: null,
-          rootMargin: '0px',
-          threshold: 0.5
-        }
-      )
-    });
+      })
+    },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 1.0
+      }
+    );
 
     // start observer
-    if(editorSectionElement){
-      observer.observe(editorSectionElement);
+    if (editorElement) {
+      observer.observe(editorElement);
     }
-
-    // load code content from github
-    (async () => {
-      await fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortification, code);
-    })();
 
     // load user from cookies if exist
     if (isUserSaved()) {
@@ -236,7 +237,7 @@ export default function Home() {
 
   // nortification update function declaration
   function _nortificationUpdate() {
-    if (!nortificationAreaVisible && !isFirstRun) {
+    if (!nortificationAreaVisible && !isFirstRun.current) {
       setNortificationAreaVisible(true);
       setTimeout(() => setNortificationAreaVisible(false), 2000);
     }
@@ -254,12 +255,16 @@ export default function Home() {
     }
   }
 
-  // test intersction observer func
-  function editorSectionObservedCallback(entry){
-    console.log("Intersection reaced");
-    console.log(`Intersection ratio : ${entry.intersectionRatio}`)
-    setIsEditorVisible(true);
+  // intersction observer callback
+  function editorObservedCallback(entry) {
     setIsNortificationsEnabled(true);
+    if (code.current === textContent.editor.editorInitialText) {
+      console.log(" Code Lazy Load");
+      // load code content from github
+      (async () => {
+        await fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortification, code);
+      })();
+    }
   }
 
   // add new nortification
