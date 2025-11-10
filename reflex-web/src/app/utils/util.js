@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { textContent } from "../data/textContent";
 
 // fetch code from github from [api/get-code]
 export async function fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortificaiton, code, codePages) {
@@ -20,10 +21,11 @@ export async function fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortifi
         code.current = jsonData.codeContent;
 
         // add new nortification
-        addNewNortificaiton("Code fetched from github");
+        addNewNortificaiton(textContent.nortificationContent.codeGetSuccess, true);
 
     } catch (error) {
         console.error('Error fetching code:', error);
+        addNewNortificaiton(textContent.nortificationContent.codeGetFail, false);
         throw error;
     }
 }

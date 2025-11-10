@@ -9,7 +9,7 @@ import { textContent } from "./data/textContent";
 export default function Home() {
   const isFirstRun = useRef(true);
   const codePages = useRef(["page.jsx"]);
-  const code = useRef(textContent.editor.editorInitialText);
+  const code = useRef(textContent.editorContent.editorInitialText);
   const editorRef = useRef(null);
 
   const [username, setUsername] = useState("");
@@ -146,8 +146,10 @@ export default function Home() {
                     // push updated code to API
                     pushCode(sanitizedUsername, userID, code.current, commitTag)
                     setIsUserPersisted(true);
+                    addNewNortification(textContent.nortificationContent.codePushSuccess, true);
                   } else {
                     console.log("Input Not Validated")
+                    addNewNortification(textContent.nortificationContent.codePushErrorInvalidData, false);
                   }
                 }}>Push Code</button>
 
@@ -170,25 +172,26 @@ export default function Home() {
         </section>
 
         {/* NORTIFICATION SIDEBAR */}
-        <section className={` ${isNortificationsEnabled ? 'flex' : 'hidden'} w-fit h-full bg-transparent fixed right-0 top-0 z-20
-         flex-row
+        <section className={` ${isNortificationsEnabled ? 'flex' : 'hidden'} bg-transparent w-fit h-full flex-row fixed right-0 top-0 z-20
+         
         `}>
           {/* expand button */}
-          <button className="bg-amber-400 w-fit h-fit p-3 sticky right-0 top-0" onClick={() => {
+          <button className="bg-accent btn rounded-s-sm w-fit h-fit p-2 sticky right-0 top-3 mt-20" onClick={() => {
             console.log(`close click : ${nortificationAreaVisible}`)
             setNortificationAreaVisible(!nortificationAreaVisible);
-          }}>close
+          }}>
+            <img src="./nortification.png" className="min-w-10 h-10 aspect-square" />
           </button>
 
           {/* nortification area */}
           <div>
-            <ul className={`${nortificationAreaVisible ? "w-96" : "w-0"}
-               h-full bg-blue-300 flex flex-col justify-end duration-300 `}>
+            <ul className={`${nortificationAreaVisible ? "w-89 px-3" : "w-0 px-0"}
+               h-full border-l-2 border-accent bg-sidebar py-3 flex flex-col justify-end duration-300 `}>
               {nortificationArr.map(obj => (
-                <li className="w-[35ch]"
-                  key={nortificationArr.indexOf(nortificationArr.indexOf((obj)))}
-                >
-                  {obj.nTime + " " + obj.nMsg}
+                <li className="w-[35ch] font-mono font-semibold "
+                  key={obj.nId}>
+                  <p>{obj.nTime + " : "}</p>
+                  <p className={obj.nIsSuccess ? "text-green-500" : "text-red-600"}>{obj.nMsg}</p>
                 </li>)
               )}
             </ul>
@@ -258,8 +261,8 @@ export default function Home() {
   // intersction observer callback
   function editorObservedCallback(entry) {
     setIsNortificationsEnabled(true);
-    if (code.current === textContent.editor.editorInitialText) {
-      console.log(" Code Lazy Load");
+    if (code.current === textContent.editorContent.editorInitialText) {
+      console.log(" Lazy Load : page.jsx");
       // load code content from github
       (async () => {
         await fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortification, code);
@@ -268,11 +271,13 @@ export default function Home() {
   }
 
   // add new nortification
-  function addNewNortification(msg) {
+  function addNewNortification(msg, isSuccess) {
     let date = new Date();
     setNortificationArr([...nortificationArr, {
+      nId: `${Date.now()}-${Math.random()}`, // unique id for rendering
       nTime: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
-      nMsg: msg
+      nMsg: msg,
+      nIsSuccess: isSuccess
     }]);
   }
 
