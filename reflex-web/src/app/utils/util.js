@@ -7,7 +7,7 @@ export async function fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortifi
         const response = await fetch('/api/get-code');
         // response success ?
         if (!response.ok) {
-            addNortification(`Error fetching code from github : ${response.statusText}`)
+            addNewNortificaiton(`Error fetching code from github : ${response.statusText}`)
             return;
         }
         // JSON
@@ -49,12 +49,15 @@ export async function pushCode(username, userID, indexPgCode, commitTag, addNewN
 
         if (!resp.ok) {
             console.Error("error pushing code", resp.status);
+            addNewNortificaiton(textContent.nortificationContent.codePushErrorAPIError, false);
         }
 
         console.log(await resp.json())
+        await addNewNortificaiton(textContent.nortificationContent.codePushSuccess);
 
     } catch (error) {
         console.error("Error trying to push code", error);
+        addNewNortificaiton(textContent.nortificationContent.codePushBackendError, false)
     }
 }
 

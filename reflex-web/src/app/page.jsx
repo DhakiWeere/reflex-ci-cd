@@ -167,6 +167,13 @@ export default function Home() {
                   rel="noopener noreferrer">
                   GitHub Branch
                 </a>}
+
+                {/* Github Actions Link */}
+                {isUserPersisted && <a className="btn accent4-sq-btn" href={`https://github.com/dhakiweere/reflex-ci-cd/actions`}
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  GitHub Actions
+                </a>}
               </div>
             </div>
           </div>
@@ -178,7 +185,6 @@ export default function Home() {
         `}>
           {/* expand button */}
           <button className="bg-accent btn rounded-s-sm w-fit h-fit p-2 sticky right-0 top-3 mt-20" onClick={() => {
-            console.log(`close click : ${nortificationAreaVisible}`)
             setNortificationAreaVisible(!nortificationAreaVisible);
           }}>
             <img src="./nortification.png" className="min-w-10 h-10 aspect-square" />
@@ -280,7 +286,6 @@ export default function Home() {
       nMsg: msg,
       nIsSuccess: isSuccess
     }]);
-    console.log(`nortification arr : ${nortificationArr}`);
   }
 
   // hoisted inpt validation func declaration

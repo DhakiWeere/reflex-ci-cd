@@ -11,6 +11,11 @@ export const textContent = {
         // BACKEND messages
         // code fetch from github
         codeGetSuccess : "GET code from github Success",
-        codeGetFail : "GET code from github Fail"
+        codeGetFail : "GET code from github Fail",
+        // code push to github
+        codePushSuccess : "PUSH code to github Success",
+        codePushBackendError : "PUSH code fail : Backend Error",
+        codePushErrorAPIError: "Push code fail : API Error",
+
     }
 }
