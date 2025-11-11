@@ -21,7 +21,7 @@ export async function fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortifi
         code.current = jsonData.codeContent;
 
         // add new nortification
-        addNewNortificaiton(textContent.nortificationContent.codeGetSuccess, true);
+        addNewNortificaiton(textContent.nortificationContent.codeGetSuccess);
 
     } catch (error) {
         console.error('Error fetching code:', error);
@@ -31,7 +31,7 @@ export async function fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortifi
 }
 
 // push code to [api/push-code]
-export async function pushCode(username, userID, indexPgCode, commitTag) {
+export async function pushCode(username, userID, indexPgCode, commitTag, addNewNortificaiton) {
     // create / update users
     createUser(username, userID);
 

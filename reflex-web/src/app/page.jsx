@@ -139,19 +139,20 @@ export default function Home() {
               {/* btn & links */}
               <div className="flex flex-row md:flex-col md:gap-y-3 md:items-center gap-x-2">
                 {/* push code btn */}
-                <button className={`btn ${isPushDetailsValidated ? 'accent-sq-btn btn' : 'btn-disabled'}`} onClick={() => {
-                  // Validating Input
-                  var { isValidated, sanitizedUsername } = validateInput();
-                  if (isValidated) {
-                    // push updated code to API
-                    pushCode(sanitizedUsername, userID, code.current, commitTag)
-                    setIsUserPersisted(true);
-                    addNewNortification(textContent.nortificationContent.codePushSuccess, true);
-                  } else {
-                    console.log("Input Not Validated")
-                    addNewNortification(textContent.nortificationContent.codePushErrorInvalidData, false);
-                  }
-                }}>Push Code</button>
+                <button className={`btn ${isPushDetailsValidated ? 'accent-sq-btn btn' : 'btn-disabled'}`}
+                  onClick={() => {
+                    // Validating Input
+                    var { isValidated, sanitizedUsername } = validateInput();
+                    if (isValidated) {
+                      // push updated code to API
+                      pushCode(sanitizedUsername, userID, code.current, commitTag, addNewNortification)
+                      setIsUserPersisted(true);
+                      addNewNortification(textContent.nortificationContent.codePushSuccess);
+                    } else {
+                      console.log("Input Not Validated")
+                      addNewNortification(textContent.nortificationContent.codePushErrorInvalidData, false);
+                    }
+                  }}>Push Code</button>
 
                 {/* delete user button */}
                 {isUserPersisted && <button className={`btn accent2-sq-btn`} onClick={() => {
@@ -271,7 +272,7 @@ export default function Home() {
   }
 
   // add new nortification
-  function addNewNortification(msg, isSuccess) {
+  function addNewNortification(msg, isSuccess=true) {
     let date = new Date();
     setNortificationArr([...nortificationArr, {
       nId: `${Date.now()}-${Math.random()}`, // unique id for rendering
@@ -279,6 +280,7 @@ export default function Home() {
       nMsg: msg,
       nIsSuccess: isSuccess
     }]);
+    console.log(`nortification arr : ${nortificationArr}`);
   }
 
   // hoisted inpt validation func declaration
