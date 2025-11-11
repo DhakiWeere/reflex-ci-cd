@@ -5,7 +5,7 @@
 
 @theme {
   --color-main: #0d021c;
-  /* --color-main: blue; */
+  --color-sidebar: #0d021cee;
   --color-accent: #F25912;
 
   --font-momo: 'Momo Trust Display';
@@ -104,6 +104,14 @@
 
   .accent3-sq-btn:hover {
     @apply bg-white border-green-500 text-green-500
+  }
+
+  .accent4-sq-btn {
+    @apply w-fit h-fit bg-blue-500 text-white rounded-sm border border-transparent p-1
+  }
+
+  .accent4-sq-btn:hover {
+    @apply bg-white border-blue-500 text-blue-500
   }
 
 

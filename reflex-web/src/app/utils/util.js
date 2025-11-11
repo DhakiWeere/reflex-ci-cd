@@ -1,12 +1,13 @@
 import Cookies from "js-cookie";
+import { textContent } from "../data/textContent";
 
 // fetch code from github from [api/get-code]
-export async function fetchCodeFromGitHub(setBranch, setCommitSha, code, codePages) {
+export async function fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortificaiton, code, codePages) {
     try {
         const response = await fetch('/api/get-code');
         // response success ?
         if (!response.ok) {
-            addNortification(`Error fetching code from github : ${response.statusText}`)
+            addNewNortificaiton(`Error fetching code from github : ${response.statusText}`)
             return;
         }
         // JSON
@@ -19,14 +20,18 @@ export async function fetchCodeFromGitHub(setBranch, setCommitSha, code, codePag
         // set code to ref variabe
         code.current = jsonData.codeContent;
 
+        // add new nortification
+        addNewNortificaiton(textContent.nortificationContent.codeGetSuccess);
+
     } catch (error) {
         console.error('Error fetching code:', error);
+        addNewNortificaiton(textContent.nortificationContent.codeGetFail, false);
         throw error;
     }
 }
 
 // push code to [api/push-code]
-export async function pushCode(username, userID, indexPgCode, commitTag) {
+export async function pushCode(username, userID, indexPgCode, commitTag, addNewNortificaiton) {
     // create / update users
     createUser(username, userID);
 
@@ -44,12 +49,15 @@ export async function pushCode(username, userID, indexPgCode, commitTag) {
 
         if (!resp.ok) {
             console.Error("error pushing code", resp.status);
+            addNewNortificaiton(textContent.nortificationContent.codePushErrorAPIError, false);
         }
 
         console.log(await resp.json())
+        await addNewNortificaiton(textContent.nortificationContent.codePushSuccess);
 
     } catch (error) {
         console.error("Error trying to push code", error);
+        addNewNortificaiton(textContent.nortificationContent.codePushBackendError, false)
     }
 }
 

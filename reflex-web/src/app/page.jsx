@@ -4,10 +4,13 @@ import { useState, useEffect, createContext, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { fetchCodeFromGitHub, getUser, isUserSaved, pushCode, removeUser, resetServerContainer } from "./utils/util";
 
+import { textContent } from "./data/textContent";
+
 export default function Home() {
   const isFirstRun = useRef(true);
   const codePages = useRef(["page.jsx"]);
-  const code = useRef("// LOADING PAGE ....");
+  const code = useRef(textContent.editorContent.editorInitialText);
+  const editorRef = useRef(null);
 
   const [username, setUsername] = useState("");
   const [commitTag, setCommitTag] = useState("");
@@ -16,26 +19,26 @@ export default function Home() {
   const [commitSha, setCommitSha] = useState('');
   const [isUserPersisted, setIsUserPersisted] = useState(false);
   const [isPushDetailsValidated, setIsPushDetailsValidated] = useState(false);
+  const [nortificationAreaVisible, setNortificationAreaVisible] = useState(false);
+  const [nortificationArr, setNortificationArr] = useState([]);
+  const [isNortificationsEnabled, setIsNortificationsEnabled] = useState(false);
 
 
   // init setup run 
   useEffect(_setup, []);
 
-  useEffect(() => {
-    if (!isFirstRun.current) {
-      let { isValidated } = validateInput();
-      if (isValidated) {
-        setIsPushDetailsValidated(true);
-      } else {
-        setIsPushDetailsValidated(false);
-      }
-    }
-  }, [username, commitTag]);
+  // nortification update
+  useEffect(_nortificationUpdate, [nortificationArr]);
 
+  // user data input update
+  useEffect(_userValidatedUpdate, [username, commitTag]);
+
+  // end first render
   useEffect(() => {
     if (isFirstRun.current) isFirstRun.current = false;
   }, []);
 
+  // JSX MARKUP
   return (
     <div className="container-top w-full h-screen overflow-y-scroll">
 
@@ -51,7 +54,7 @@ export default function Home() {
       <main className="container-actual max-w-7xl w-full">
 
         {/* CONTAINER PG 1 */}
-        <div className="container-pg1 w-full h-[90vh]">
+        <section className="container-pg1 w-full h-[90vh]">
           <div className="h-full w-full flex flex-col gap-y-3 md:justify-center">
             {/* subtitle*/}
             <h2 className="subtitle w-full text-start">Self<br /> Reflecting<br /> System<br /> Pipeline</h2>
@@ -69,6 +72,7 @@ export default function Home() {
               Start making changes to this very page
             </p>
             <button className="w-fit h-fit p-4 btn accent-btn" onClick={() => {
+              // scroll to editor
               document.getElementById('c-pg2').scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
@@ -78,10 +82,10 @@ export default function Home() {
             </button>
           </div>
 
-        </div>
+        </section>
 
         {/* CONTAINER PG 2*/}
-        <div id="c-pg2" className="container-pg2 w-full h-[90vh]">
+        <section id="c-pg2" className="container-pg2 w-full h-[90vh]">
 
           {/* Commit Details */}
           <div className="commit-details w-full h-fit overflow-x-hidden">
@@ -100,7 +104,7 @@ export default function Home() {
 
           <div className="flex flex-col md:flex-row md:gap-x-4">
             {/* editor */}
-            <div className="editor-wrapper">
+            <div ref={editorRef} className="editor-wrapper">
               <Editor
                 height="100%"
                 defaultLanguage="javascript"
@@ -135,17 +139,20 @@ export default function Home() {
               {/* btn & links */}
               <div className="flex flex-row md:flex-col md:gap-y-3 md:items-center gap-x-2">
                 {/* push code btn */}
-                <button className={`btn ${isPushDetailsValidated ? 'accent-sq-btn btn' : 'btn-disabled'}`} onClick={() => {
-                  // Validating Input
-                  var { isValidated, sanitizedUsername } = validateInput();
-                  if (isValidated) {
-                    // push updated code to API
-                    pushCode(sanitizedUsername, userID, code.current, commitTag)
-                  } else {
-                    console.log("Input Not Validated")
-                  }
-                  setIsUserPersisted(true);
-                }}>Push Code</button>
+                <button className={`btn ${isPushDetailsValidated ? 'accent-sq-btn btn' : 'btn-disabled'}`}
+                  onClick={() => {
+                    // Validating Input
+                    var { isValidated, sanitizedUsername } = validateInput();
+                    if (isValidated) {
+                      // push updated code to API
+                      pushCode(sanitizedUsername, userID, code.current, commitTag, addNewNortification)
+                      setIsUserPersisted(true);
+                      addNewNortification(textContent.nortificationContent.codePushSuccess);
+                    } else {
+                      console.log("Input Not Validated")
+                      addNewNortification(textContent.nortificationContent.codePushErrorInvalidData, false);
+                    }
+                  }}>Push Code</button>
 
                 {/* delete user button */}
                 {isUserPersisted && <button className={`btn accent2-sq-btn`} onClick={() => {
@@ -160,13 +167,43 @@ export default function Home() {
                   rel="noopener noreferrer">
                   GitHub Branch
                 </a>}
+
+                {/* Github Actions Link */}
+                {isUserPersisted && <a className="btn accent4-sq-btn" href={`https://github.com/dhakiweere/reflex-ci-cd/actions`}
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  GitHub Actions
+                </a>}
               </div>
-
             </div>
-
           </div>
+        </section>
 
-        </div>
+        {/* NORTIFICATION SIDEBAR */}
+        <section className={` ${isNortificationsEnabled ? 'flex' : 'hidden'} bg-transparent w-fit h-full flex-row fixed right-0 top-0 z-20
+         
+        `}>
+          {/* expand button */}
+          <button className="bg-accent btn rounded-s-sm w-fit h-fit p-2 sticky right-0 top-3 mt-20" onClick={() => {
+            setNortificationAreaVisible(!nortificationAreaVisible);
+          }}>
+            <img src="./nortification.png" className="min-w-10 h-10 aspect-square" />
+          </button>
+
+          {/* nortification area */}
+          <div>
+            <ul className={`${nortificationAreaVisible ? "w-89 px-3" : "w-0 px-0"}
+               h-full border-l-2 border-accent bg-sidebar py-3 flex flex-col justify-end duration-300 `}>
+              {nortificationArr.map(obj => (
+                <li className="w-[35ch] font-mono font-semibold "
+                  key={obj.nId}>
+                  <p>{obj.nTime + " : "}</p>
+                  <p className={obj.nIsSuccess ? "text-green-500" : "text-red-600"}>{obj.nMsg}</p>
+                </li>)
+              )}
+            </ul>
+          </div>
+        </section>
 
       </main>
     </div>
@@ -174,10 +211,30 @@ export default function Home() {
 
   // hoisted setup function declaration
   function _setup() {
-    // load code content from github
-    (async () => {
-      await fetchCodeFromGitHub(setBranch, setCommitSha, code);
-    })();
+    // editor section elem
+    const editorElement = editorRef.current;
+    // editor observer
+    const observer = new IntersectionObserver((entires) => {
+      entires.forEach(entry => {
+        if (entry.isIntersecting) {
+          editorObservedCallback(entry);
+          // stop observer
+          observer.unobserve(editorElement);
+          observer.disconnect();
+        }
+      })
+    },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 1.0
+      }
+    );
+
+    // start observer
+    if (editorElement) {
+      observer.observe(editorElement);
+    }
 
     // load user from cookies if exist
     if (isUserSaved()) {
@@ -186,6 +243,49 @@ export default function Home() {
       setUserID(userObj.id);
       setIsUserPersisted(true);
     }
+  }
+
+  // nortification update function declaration
+  function _nortificationUpdate() {
+    if (!nortificationAreaVisible && !isFirstRun.current) {
+      setNortificationAreaVisible(true);
+      setTimeout(() => setNortificationAreaVisible(false), 2000);
+    }
+  }
+
+  // user validationn update function
+  function _userValidatedUpdate() {
+    if (!isFirstRun.current) {
+      let { isValidated } = validateInput();
+      if (isValidated) {
+        setIsPushDetailsValidated(true);
+      } else {
+        setIsPushDetailsValidated(false);
+      }
+    }
+  }
+
+  // intersction observer callback
+  function editorObservedCallback(entry) {
+    setIsNortificationsEnabled(true);
+    if (code.current === textContent.editorContent.editorInitialText) {
+      console.log(" Lazy Load : page.jsx");
+      // load code content from github
+      (async () => {
+        await fetchCodeFromGitHub(setBranch, setCommitSha, addNewNortification, code);
+      })();
+    }
+  }
+
+  // add new nortification
+  function addNewNortification(msg, isSuccess=true) {
+    let date = new Date();
+    setNortificationArr([...nortificationArr, {
+      nId: `${Date.now()}-${Math.random()}`, // unique id for rendering
+      nTime: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+      nMsg: msg,
+      nIsSuccess: isSuccess
+    }]);
   }
 
   // hoisted inpt validation func declaration
