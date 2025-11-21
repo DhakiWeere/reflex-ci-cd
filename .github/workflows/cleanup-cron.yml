@@ -12,7 +12,7 @@ permissions:
 jobs:
   branch-cleanup-and-server-reset:
     # run if cleanup cron is enabled in variables
-    if: ${{ vars.RUN_CLEANUP == 'true' }}
+    if: ${{ vars.CLEANUP_CRON_RUN == 'true' }}
 
     runs-on: ubuntu-latest
     env:
