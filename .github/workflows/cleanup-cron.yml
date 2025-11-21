@@ -11,6 +11,9 @@ permissions:
 
 jobs:
   branch-cleanup-and-server-reset:
+    # run if cleanup cron is enabled in variables
+    if: ${{ vars.RUN_CLEANUP == 'true' }}
+
     runs-on: ubuntu-latest
     env:
       CONTAINER_NAME: reflex-stable
